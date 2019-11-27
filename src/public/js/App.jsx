@@ -11,7 +11,7 @@ function App() {
 
     function apiTest () {
     console.log(searchResult)
-    fetch(`/test`)
+    fetch(`/randomCocktail`)
         .then((response) => {
             return response = response.json()
         })

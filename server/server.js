@@ -6,7 +6,7 @@ const app = express();
 app.use(express.static('dist'));
 app.use(express.static('src'));
 
-app.get('/test', (req, res) => {
+app.get('/randomCocktail', (req, res) => {
     axios.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`)
         .then((result) => {
             let ingredients = [
