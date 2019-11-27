@@ -10,11 +10,11 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/hank-frank/cocktail"
   },
-  "author": "",
+  "author": "Henry Frank",
   "license": "ISC",
-  "homepage": "",
+  "homepage": "https://github.com/hank-frank/cocktail",
   "dependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
