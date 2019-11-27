@@ -1,0 +1,58 @@
+@font-face {
+    font-family: 'geomanistregular';
+    src: url('../assets/geomanist-regular-webfont.woff2') format('woff2'),
+    url('../assets/geomanist-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'geomanistlight';
+    src: url('../assets/geomanist-light-webfont.woff2') format('woff2'),
+    url('../assets/geomanist-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+$geo: 'geomanistregular', sans-serif;
+$geo-light: 'geomanistlight', sans-serif;
+$dark: #7e023c;
+$med: #9A1750;
+$light: #E3AFBC;
+$pink: #EE4C7C;
+$bright: #e30815;
+$grey: #E2e1dd;
+$dkgrey: #32373a;
+
+body {
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    background-color: $grey;
+    font-family: $geo;
+}
+
+
+/////////////////////////////////////////////////////
+///               Header
+/////////////////////////////////////////////////////
+.header-container {
+    background-color: $med;
+    width: 100vw;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.header-item {
+    color: $grey;
+}
