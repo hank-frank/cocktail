@@ -1,48 +1,89 @@
 import React, { useState, useEffect } from 'react';
-// import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route } from 'react-router-dom';
 
 import Header from './header.jsx';
-import Search from './search.jsx';
+import SearchBar from './searchBar.jsx';
+import SearchResults from './searchResults.jsx';
+import History from './history.jsx';
+import Favorites from './favorites.jsx';
+import Cocktail from './oneCocktail.jsx';
 
 function App() {
-    const [cocktail, setCocktail] = useState({});
+    const [randomCocktail, setRandomCocktail] = useState({});
+    const [byId, setById] = useState({});
     const [searchResult, setSearchResult] = useState([]);
 
 
-    function apiTest () {
-    console.log(searchResult)
-    fetch(`/randomCocktail`)
-        .then((response) => {
-            return response = response.json()
-        })
-        .then((data) => {
-            setCocktail(data);
-        })
-        .catch(err => console.error(`whoopsies`, err))
+    const getRandomCocktail = () => {
+        fetch(`/randomCocktail`)
+            .then((response) => {
+                return response = response.json()
+            })
+            .then((data) => {
+                setRandomCocktail(data);
+                
+            })
+            .catch(err => console.error(`whoopsies random`, err))
     };
 
-    const test2 = (searchValue) => {
-        fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${searchValue}`)
+    const searchByIngredient = (searchValue) => {
+        fetch(`byIngredient?search=${searchValue}`)
         .then((response) => {
             return response = response.json()
         })
         .then ((data) => {
-            setSearchResult(data.drinks)
-            console.log(data.drinks)
+            setSearchResult(data)
         })
-        .catch(err => console.error(`whoopsies2`, err))
+        .catch(err => console.error(`whoopsies ingredient`, err))
+    }
+
+    const getById = (cocktailId) => {
+        fetch(`byId?id=${cocktailId}`)
+        .then((response) => {
+            return response = response.json()
+        })
+        .then ((data) => {
+            setById(data);
+        })
+        .catch(err => console.error(`whoopsies byId`, err))
+    }
+
+    const forTesting = () => {
+        // getById(12402);
+        console.log(`random cocktail: `, randomCocktail);
+        console.log(`cocktail byId: `, byId);
     }
 
     return(
-        <>
-        <Header />
-        <button className="test-button" onClick={ ()=> apiTest()}>Testing!</button>
-        <button className="test-button" onClick={ ()=> test2()}>Test 2</button>
-        <Search 
-            search = { test2 }
-            resultArray = { searchResult }
-        />
-        </>
+        <Router>
+            <Header />
+            <button className="test-button" onClick={ ()=> getRandomCocktail()}>I don't care, give me anything...</button>
+            <button className="test-button" onClick={ ()=> forTesting()}>Test 2</button>
+            <SearchBar 
+                search = { searchByIngredient }
+            />
+            <div className="main-container">
+            <div className="left-area-container">
+            <Route exact path="/">
+                <SearchResults
+                    drinksArray = { searchResult }
+                    getById = { getById }
+                />
+            </Route>
+            <Route path='/OneCocktail'>
+                <Cocktail
+                    drinksArray = { searchResult }
+                    randomCocktail = { randomCocktail }
+                    byId = { byId }
+                />
+            </Route>
+            </div>
+                <div className="side-container">
+                    <History />
+                    <Favorites />
+                </div>
+            </div>
+        </Router>
     )
 };
 
