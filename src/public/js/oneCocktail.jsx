@@ -10,21 +10,21 @@ function Cocktail (props) {
                 <div className="cocktail-content">                 
                     <div className="first-row">
                         <div className="title-ingredients">
-                            <h4 className="cocktail-title">{ props.byId.name ? props.byId.name : "Name coming Soon!" }</h4>
+                            <h4 className="cocktail-title">{ props.cocktail.name ? props.cocktail.name : "Name coming Soon!" }</h4>
                             <div className="ingredient-container">
                                 <div className="title-box">
                                     <h4 className="ingredient-title">Ingredients</h4>
                                 </div>
                                 <div className="ingredients-units">
-                                    {props.byId.units ?
-                                        props.byId.units.map((unit) => {
+                                    {props.cocktail.units ?
+                                        props.cocktail.units.map((unit) => {
                                             return (
                                             <p className="ingredient">{} { unit }</p>
                                             )
                                         }) : <p className="ingredient">unit</p>
                                     }
-                                    {props.byId.ingredients ?
-                                        props.byId.ingredients.map((ingredient) => {
+                                    {props.cocktail.ingredients ?
+                                        props.cocktail.ingredients.map((ingredient) => {
                                             return (
                                             <p className="ingredient">{} { ingredient }</p>
                                             )
@@ -35,7 +35,7 @@ function Cocktail (props) {
                         </div>
                         <div className="image-holder-col">
                             <div className="image-holder-row">
-                                <img className="temp-image" src={ props.byId.image }/>
+                                <img className="temp-image" src={ props.cocktail.image }/>
                             </div>
                         </div>
                     </div>
@@ -44,7 +44,7 @@ function Cocktail (props) {
                             <div className="title-box">
                                 <h4 className="ingredient-title">Description</h4>
                             </div>
-                            <p className="description">{ props.byId.instructions ? props.byId.instructions : "description"}</p> 
+                            <p className="description">{ props.cocktail.instructions ? props.cocktail.instructions : "description"}</p> 
                         </div>
                     </div>
                 </div>

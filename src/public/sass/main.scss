@@ -47,11 +47,20 @@ body {
 .header-content {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 .header-item {
+    margin: 0 2vw;
+}
+
+.link-text {
+    text-decoration: none;
     color: $grey;
+}
+
+.link-text:hover {
+    color: $warm;
 }
 
 
@@ -60,10 +69,10 @@ body {
 /////////////////////////////////////////////////////
 
 .search-section {
-display: flex;
-flex-direction: row;
-justify-content: center;
-margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
 }
 
 .search-label {
@@ -85,12 +94,40 @@ margin: 0;
 }
 
 .submit-button {
-height: 32px; 
-margin: 0;
-background-color: $orange;
-border: none;
-color: $grey;
-font-size: 1rem;
+    height: 32px; 
+    margin: 0;
+    background-color: $orange;
+    border: none;
+    color: $grey;
+    font-size: 1rem;
+}
+
+.submit-button:hover {
+    background-color: $warm;
+    border: 2px solid $orange;
+    cursor: pointer;
+}
+
+.random-flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 1vh;
+}
+
+.random-button {
+    height: 32px; 
+    margin: 0;
+    background-color: $orange;
+    border: none;
+    color: $grey;
+    font-size: 1rem;
+}
+
+.random-button:hover {
+    background-color: $warm;
+    border: 2px solid $orange;
+    cursor: pointer;
 }
 
 /////////////////////////////////////////////////////
@@ -171,13 +208,18 @@ font-size: 1rem;
 }
 
 .history-cocktail-title {
-    color: $orange;
+    color: $grey;
     font-size: .8rem;
     margin: 0.5vh;
 }
 
+.history-cocktail-title:hover {
+    color: $orange;
+    cursor: pointer;
+}
+
 /////////////////////////////////////////////////////
-///               History
+///               fav
 /////////////////////////////////////////////////////
 //history-container is above for grid formatting
 
@@ -194,9 +236,14 @@ font-size: 1rem;
 }
 
 .fav-cocktail-title {
-    color: $orange;
+    color: $grey;
     font-size: .8rem;
     margin: 0.5vh;
+}
+
+.fav-cocktail-title:hover {
+    color: $orange;
+    cursor: pointer;
 }
 
 /////////////////////////////////////////////////////

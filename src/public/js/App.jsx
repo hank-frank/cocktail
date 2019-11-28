@@ -57,10 +57,10 @@ function App() {
     return(
         <Router>
             <Header />
-            <button className="test-button" onClick={ ()=> getRandomCocktail()}>I don't care, give me anything...</button>
             <button className="test-button" onClick={ ()=> forTesting()}>Test 2</button>
             <SearchBar 
                 search = { searchByIngredient }
+                getRandom = { getRandomCocktail }
             />
             <div className="main-container">
             <div className="left-area-container">
@@ -70,11 +70,16 @@ function App() {
                     getById = { getById }
                 />
             </Route>
-            <Route path='/OneCocktail'>
+            <Route path='/byId'>
                 <Cocktail
                     drinksArray = { searchResult }
-                    randomCocktail = { randomCocktail }
-                    byId = { byId }
+                    cocktail = { byId }
+                />
+            </Route>
+            <Route path='/Random'>
+                <Cocktail
+                    drinksArray = { searchResult }
+                    cocktail = { randomCocktail }
                 />
             </Route>
             </div>

@@ -28,6 +28,9 @@ function SearchBar (props) {
                 <input className="submit-button" type="submit" value="Search" />
             </form>
         </div>
+        <div className="random-flex">
+            <button className="random-button" onClick={ ()=> getRandomCocktail()}>I don't care, give me anything...</button>
+        </div>
         </>
     )
 };
