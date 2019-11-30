@@ -16,7 +16,27 @@ function App() {
     const [current, setCurrent] = useState({});
     const [historyArray, setHistoryArray] = useState([]);
     const [newArray, setNewArray] = useState([]);
+    const [allViewed, setAllViewed] = useState([]);
     const [favoritesArray, setFavoritesArray] = useState([]);
+
+    useEffect(() => {
+        let eachViewed = current;
+        let localViewed = allViewed;
+        localViewed.push(eachViewed);
+        setAllViewed(localViewed);
+    }, [current])
+
+    useEffect(() => {
+        let localAll = allViewed;
+        let localFavorites = [];
+
+        localAll.forEach((cocktail) => {
+            if (cocktail.favorite === true) {
+                localFavorites.push(cocktail);
+            }
+        })
+        setFavoritesArray(localFavorites);
+    }, [allViewed])
 
 
     const getRandomCocktail = () => {
@@ -35,12 +55,14 @@ function App() {
     };
 
     const searchByIngredient = (searchValue) => {
+        console.log(`fetch: `, searchValue)
         fetch(`byIngredient?search=${searchValue}`)
         .then((response) => {
             return response = response.json()
         })
         .then ((cocktailArray) => {
             setSearchResult(cocktailArray)
+            console.log(cocktailArray)
         })
         .catch(err => console.error(`whoopsies ingredient`, err))
     }
@@ -76,54 +98,66 @@ function App() {
     }
 
     const makeFavorite = (cocktail) => {
-//do stuff
+        let eachViewed = current;
+        let localFavorites = favoritesArray;
+        localFavorites.push(eachViewed);
+        setFavoritesArray(localFavorites);
     }
 
     const forTesting = () => {
         // getById(12402);
-        // console.log('site url: ', window.location.href)
+        // console.log('site url: ', window.location.href);
         // console.log(`random cocktail: `, randomCocktail);
         // console.log(`cocktail byId: `, byId);
-        console.log(`historyArray: `, historyArray);
-        console.log(`current: `, current)
-        console.log(`newArray: `, newArray)
+        // console.log(`historyArray: `, historyArray);
+        // console.log(`current: `, current);
+        // console.log(`newArray: `, newArray);
+        console.log(`all viewed: `, allViewed);
+        console.log(`all favorites: `, favoritesArray);
+        console.log(`search result: `, searchResult);
+
     }
 
     return(
         <Router>
             <Header />
-            <button className="test-button" onClick={ ()=> forTesting()}>Test 2</button>
+            <div className="test-button-container">
+                <button className="test-button" onClick={ ()=> forTesting()}>Testing!</button>
+            </div>
             <SearchBar 
                 search = { searchByIngredient }
                 getRandom = { getRandomCocktail }
             />
             <div className="main-container">
-            <div className="left-area-container">
-            <Route exact path="/">
-                <SearchResults
-                    drinksArray = { searchResult }
-                    getById = { getById }
-                />
-            </Route>
-            <Route path='/oneCocktail'>
-                <Cocktail
-                    drinksArray = { searchResult }
-                    cocktail = { current }
-                    makeFavorite = { makeFavorite }
-                />
-            </Route>
-            <Route path='/addCocktail'>
-                <Create 
-                    addCocktail = { addCocktail }
-                />
-            </Route>
-            </div>
+                <div className="left-area-container">
+                    <Route path="/searchContents">
+                        <SearchResults
+                            drinksArray = { searchResult }
+                            getById = { getById }
+                        />
+                    </Route>
+                    <Route path='/oneCocktail'>
+                        <Cocktail
+                            drinksArray = { searchResult }
+                            cocktail = { current }
+                            makeFavorite = { makeFavorite }
+                        />
+                    </Route>
+                    <Route path='/addCocktail'>
+                        <Create 
+                            addCocktail = { addCocktail }
+                        />
+                    </Route>
+                </div>
                 <div className="side-container">
                     <History 
                         historyArray = { historyArray }
                         recallHistory = { recallHistory }   
                     />
-                    <Favorites />
+                    <Favorites 
+                        favoritesArray = { favoritesArray }
+                        recallHistory = { recallHistory }
+                    />
                 </div>
             </div>
         </Router>

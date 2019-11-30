@@ -13,11 +13,10 @@ function History (props) {
                     <h4 className="history-title">History</h4>
                 </div>
                 {
-                    props.historyArray.map((cocktail, key) => {
-                        key++
+                    props.historyArray.map((cocktail) => {
                         return  (
-                            <Link to='/oneCocktail'>
-                                <p className="history-cocktail-title" onClick={() => props.recallHistory(cocktail.id)} key={ key }>{ cocktail.name }</p>
+                            <Link to='/oneCocktail' key={ cocktail.id}>
+                                <p className="history-cocktail-title" onClick={() => props.recallHistory(cocktail.id)}>{ cocktail.name }</p>
                             </Link>
                         )
                     })

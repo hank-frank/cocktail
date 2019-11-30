@@ -21,13 +21,12 @@ return (
                 <Link to='/addCocktail' className="link-text">Create</Link>
             </div>
             <div className="header-item">
-                <Link to='/' className="link-text">Search</Link>
+                <Link to='/searchContents' className="link-text">Search</Link>
             </div>
         </div>
     </div>
     </>
     )
-
 };
 
 export default Header;

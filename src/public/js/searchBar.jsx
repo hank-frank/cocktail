@@ -25,15 +25,14 @@ function SearchBar (props) {
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        console.log(searchValue)
         props.search(value);
+        console.log(value);
         reset();
     }
 
     return (
         <>
         <div className="search-section">
-        {/* <Link to='/'> */}
             <form onSubmit={ handleSubmit }>
                 <label className="search-label">
                     Search by Ingredient:
@@ -43,11 +42,10 @@ function SearchBar (props) {
                     { ...bind}
                     />
                 </label>
-                {/* <Link to='/'> */}
+                {/* <Link to='/searchResults'> */}
                     <input className="submit-button" type="submit" value="Search" />
                 {/* </Link> */}
             </form>
-            {/* </Link> */}
         </div>
         <div className="random-flex">
             { conditionalLink }
