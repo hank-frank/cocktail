@@ -31,6 +31,17 @@ body {
     font-family: $geo;
 }
 
+@mixin horizontal-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+@mixin vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
 /////////////////////////////////////////////////////
 ///               Header
@@ -39,9 +50,7 @@ body {
     background-color: $orange;
     width: 100vw;
     height: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    @include vertical-center;
 }
 
 .header-content {
@@ -69,9 +78,7 @@ body {
 /////////////////////////////////////////////////////
 
 .search-section {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    @include horizontal-center;
     margin: 0;
 }
 
@@ -109,9 +116,7 @@ body {
 }
 
 .random-flex {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    @include horizontal-center();
     margin-top: 1vh;
 }
 
@@ -166,9 +171,7 @@ body {
     height: 200px;
     background-color: $grey;
     margin: 2vh 1vw;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    @include horizontal-center;
 }
 .cocktail-card:hover {
     box-shadow: 8px 8px 8px $blue;
@@ -276,15 +279,11 @@ body {
 .image-holder-col {
     grid-area: img;
     margin-top: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    @include vertical-center;
 }
 
 .image-holder-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    @include horizontal-center;
 }
 
 .temp-image {
@@ -329,4 +328,49 @@ body {
 .description {
     font-size: 1rem;
     color: $blue;
+}
+
+/////////////////////////////////////////////////////
+///               Cocktail
+/////////////////////////////////////////////////////
+
+.create-container {
+    background-color: $grey;
+    width: 100%;
+    height: 400px;
+}
+
+.create-title-flex {
+    @include horizontal-center;
+}
+
+.create-title {
+    color: $orange;
+    font-size: 2rem;
+    margin: 2vh 0;
+}
+
+.inputs-flex {
+    @include horizontal-center;
+}
+
+.inputs-vert-flex {
+    @include vertical-center;
+}
+
+.inputs-submit {
+    width: 200px;
+    height: 60px;
+    color: $grey;
+    background-color: $orange;
+    border: none;
+    font-size: 1rem;
+}
+
+.cocktail-input {
+    background-color: $grey;
+    border: none;
+    border-bottom: 2px solid $orange;
+    width: 80%;
+    margin: 1vw 0;
 }

@@ -1,34 +1,27 @@
 import React, { useState, useEffect } from 'react';
 
 function Cocktail (props) {
-    const [search, setSearch] = useState("");
-
     
     return (
         <>
             <div className="one-cocktail-container">
                 <div className="cocktail-content">                 
                     <div className="first-row">
+                        <p className="glass-type">{ props.cocktail.glass ? props.cocktail.glass : "glass"}</p>
                         <div className="title-ingredients">
                             <h4 className="cocktail-title">{ props.cocktail.name ? props.cocktail.name : "Name coming Soon!" }</h4>
                             <div className="ingredient-container">
                                 <div className="title-box">
                                     <h4 className="ingredient-title">Ingredients</h4>
                                 </div>
-                                <div className="ingredients-units">
-                                    {props.cocktail.units ?
-                                        props.cocktail.units.map((unit) => {
+                                <div className="ingredients-both">
+                                    {props.cocktail.both ?
+                                        props.cocktail.both.map((ingredient, key) => {
+                                            key++
                                             return (
-                                            <p className="ingredient">{} { unit }</p>
+                                            <p className="ingredient" key={key}>{} { ingredient }</p>
                                             )
-                                        }) : <p className="ingredient">unit</p>
-                                    }
-                                    {props.cocktail.ingredients ?
-                                        props.cocktail.ingredients.map((ingredient) => {
-                                            return (
-                                            <p className="ingredient">{} { ingredient }</p>
-                                            )
-                                        }) : <p className="ingredient">Ingredients</p>
+                                        }) : <p className="ingredient">ingredients</p>
                                     }
                                 </div>
                             </div>

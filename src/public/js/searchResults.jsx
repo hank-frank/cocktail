@@ -9,14 +9,14 @@ function SearchResult (props) {
             {
                 props.drinksArray.map((each) => {
                     return (
-                        <div className="cocktail-card" key={ each.idDrink } onClick={ props.getById(each.idDrink) }>
-                            {/* <Link to='/oneCocktail'> */}
+                        <Link to='/oneCocktail'>
+                            <div className="cocktail-card" key={ each.idDrink } onClick={ () => props.getById(each.idDrink) }>
                                 <div className="card-contents">
                                     <h1 className="cocktail-card-title">{ each.strDrink }</h1>
                                     <img className="card-image" src={ each.strDrinkThumb } />
                                 </div>
-                            {/* </Link> */}
-                        </div>
+                            </div>
+                        </Link>
                     )
                 })
             }

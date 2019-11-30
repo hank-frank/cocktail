@@ -18,7 +18,7 @@ return (
                 <Link to='/ById' className="link-text">OneCocktail</Link>
             </div>
             <div className="header-item">
-                <Link to='/Random' className="link-text">Random</Link>
+                <Link to='/createNew' className="link-text">Create</Link>
             </div>
             <div className="header-item">
                 <Link to='/' className="link-text">Search</Link>

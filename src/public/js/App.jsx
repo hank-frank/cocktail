@@ -7,11 +7,14 @@ import SearchResults from './searchResults.jsx';
 import History from './history.jsx';
 import Favorites from './favorites.jsx';
 import Cocktail from './oneCocktail.jsx';
+import Create from './createNew.jsx';
 
 function App() {
     const [randomCocktail, setRandomCocktail] = useState({});
     const [byId, setById] = useState({});
     const [searchResult, setSearchResult] = useState([]);
+    const [current, setCurrent] = useState({});
+    const [historyArray, setHistoryArray] = useState([]);
 
 
     const getRandomCocktail = () => {
@@ -19,9 +22,12 @@ function App() {
             .then((response) => {
                 return response = response.json()
             })
-            .then((data) => {
-                setRandomCocktail(data);
-                
+            .then((cocktail) => {
+                setRandomCocktail(cocktail);
+                setCurrent(cocktail);
+                let tempHistory = historyArray;
+                tempHistory.push(cocktail);
+                setHistoryArray(tempHistory);
             })
             .catch(err => console.error(`whoopsies random`, err))
     };
@@ -31,8 +37,8 @@ function App() {
         .then((response) => {
             return response = response.json()
         })
-        .then ((data) => {
-            setSearchResult(data)
+        .then ((cocktailArray) => {
+            setSearchResult(cocktailArray)
         })
         .catch(err => console.error(`whoopsies ingredient`, err))
     }
@@ -42,16 +48,35 @@ function App() {
         .then((response) => {
             return response = response.json()
         })
-        .then ((data) => {
-            setById(data);
+        .then ((cocktail) => {
+            setById(cocktail);
+            setCurrent(cocktail);
+            let tempHistory = historyArray;
+            tempHistory.push(cocktail);
+            setHistoryArray(tempHistory);
         })
         .catch(err => console.error(`whoopsies byId`, err))
     }
 
+    const recallHistory = (id) => {
+        console.log(id);
+        let tempArray = historyArray;
+        for (let i = 0; i < tempArray.length; i++) {
+            console.log("inside for loop")
+            if (tempArray[i].id === id) {
+                console.log("inside if")
+                setCurrent(tempArray[i]);
+            }
+        }
+    };
+
     const forTesting = () => {
         // getById(12402);
-        console.log(`random cocktail: `, randomCocktail);
-        console.log(`cocktail byId: `, byId);
+        // console.log('site url: ', window.location.href)
+        // console.log(`random cocktail: `, randomCocktail);
+        // console.log(`cocktail byId: `, byId);
+        console.log(`historyArray: `, historyArray);
+        console.log(`current: `, current)
     }
 
     return(
@@ -70,21 +95,23 @@ function App() {
                     getById = { getById }
                 />
             </Route>
-            <Route path='/byId'>
+            <Route path='/oneCocktail'>
                 <Cocktail
                     drinksArray = { searchResult }
-                    cocktail = { byId }
+                    cocktail = { current }
                 />
             </Route>
-            <Route path='/Random'>
-                <Cocktail
-                    drinksArray = { searchResult }
-                    cocktail = { randomCocktail }
+            <Route exact path="/createNew">
+                <Create
+                    
                 />
             </Route>
             </div>
                 <div className="side-container">
-                    <History />
+                    <History 
+                        historyArray = { historyArray }
+                        recallHistory = { recallHistory }   
+                    />
                     <Favorites />
                 </div>
             </div>

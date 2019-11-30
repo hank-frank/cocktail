@@ -42,7 +42,24 @@ app.get('/randomCocktail', (req, res) => {
                 result.data.drinks[0].strMeasure13,
                 result.data.drinks[0].strMeasure14,
                 result.data.drinks[0].strMeasure15,
-            ]
+            ];
+            let both = [
+                `${result.data.drinks[0].strMeasure1} ${result.data.drinks[0].strIngredient1}`,
+                `${result.data.drinks[0].strMeasure2} ${result.data.drinks[0].strIngredient2}`,
+                `${result.data.drinks[0].strMeasure3} ${result.data.drinks[0].strIngredient3}`,
+                `${result.data.drinks[0].strMeasure4} ${result.data.drinks[0].strIngredient4}`,
+                `${result.data.drinks[0].strMeasure5} ${result.data.drinks[0].strIngredient5}`,
+                `${result.data.drinks[0].strMeasure6} ${result.data.drinks[0].strIngredient6}`,
+                `${result.data.drinks[0].strMeasure7} ${result.data.drinks[0].strIngredient7}`,
+                `${result.data.drinks[0].strMeasure8} ${result.data.drinks[0].strIngredient8}`,
+                `${result.data.drinks[0].strMeasure9} ${result.data.drinks[0].strIngredient9}`,
+                `${result.data.drinks[0].strMeasure10} ${result.data.drinks[0].strIngredient10}`,
+                `${result.data.drinks[0].strMeasure11} ${result.data.drinks[0].strIngredient11}`,
+                `${result.data.drinks[0].strMeasure12} ${result.data.drinks[0].strIngredient12}`,
+                `${result.data.drinks[0].strMeasure13} ${result.data.drinks[0].strIngredient13}`,
+                `${result.data.drinks[0].strMeasure14} ${result.data.drinks[0].strIngredient14}`,
+                `${result.data.drinks[0].strMeasure15} ${result.data.drinks[0].strIngredient15}`,
+            ];
             formattedDrink = {
                 "id": result.data.drinks[0].idDrink,
                 "name": result.data.drinks[0].strDrink,
@@ -56,6 +73,9 @@ app.get('/randomCocktail', (req, res) => {
                 }),
                 "units": units.filter((each) => {
                     return each != null;
+                }),
+                "both": both.filter((each) => {
+                    return each != `${null} ${null}`;
                 }),
                 "source": "api"
             }
@@ -121,6 +141,23 @@ app.get('/byId', (req, res) => {
                 result.data.drinks[0].strMeasure13,
                 result.data.drinks[0].strMeasure14,
                 result.data.drinks[0].strMeasure15,
+            ];
+            let both = [
+                `${result.data.drinks[0].strMeasure1} ${result.data.drinks[0].strIngredient1}`,
+                `${result.data.drinks[0].strMeasure2} ${result.data.drinks[0].strIngredient2}`,
+                `${result.data.drinks[0].strMeasure3} ${result.data.drinks[0].strIngredient3}`,
+                `${result.data.drinks[0].strMeasure4} ${result.data.drinks[0].strIngredient4}`,
+                `${result.data.drinks[0].strMeasure5} ${result.data.drinks[0].strIngredient5}`,
+                `${result.data.drinks[0].strMeasure6} ${result.data.drinks[0].strIngredient6}`,
+                `${result.data.drinks[0].strMeasure7} ${result.data.drinks[0].strIngredient7}`,
+                `${result.data.drinks[0].strMeasure8} ${result.data.drinks[0].strIngredient8}`,
+                `${result.data.drinks[0].strMeasure9} ${result.data.drinks[0].strIngredient9}`,
+                `${result.data.drinks[0].strMeasure10} ${result.data.drinks[0].strIngredient10}`,
+                `${result.data.drinks[0].strMeasure11} ${result.data.drinks[0].strIngredient11}`,
+                `${result.data.drinks[0].strMeasure12} ${result.data.drinks[0].strIngredient12}`,
+                `${result.data.drinks[0].strMeasure13} ${result.data.drinks[0].strIngredient13}`,
+                `${result.data.drinks[0].strMeasure14} ${result.data.drinks[0].strIngredient14}`,
+                `${result.data.drinks[0].strMeasure15} ${result.data.drinks[0].strIngredient15}`,
             ]
             formattedDrink = {
                 "id": result.data.drinks[0].idDrink,
@@ -135,6 +172,9 @@ app.get('/byId', (req, res) => {
                 }),
                 "units": units.filter((each) => {
                     return each != null;
+                }),
+                "both": both.filter((each) => {
+                    return each != `${null} ${null}`;
                 }),
                 "source": "api"
             }
