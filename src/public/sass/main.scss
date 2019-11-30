@@ -264,6 +264,78 @@ body {
     margin: 0 2vw;
 }
 
+.glass-type {
+    color: $warm;
+    font-size: 0.8rem;
+}
+
+.favorite {
+    margin: 0 0 1vh 0;
+    font-size: 1rem;
+    color: $warm;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-bottom: 1vh;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $warm;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: $orange;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px $orange;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
 .first-row {
     display: grid;
     grid-template-areas:
@@ -331,13 +403,13 @@ body {
 }
 
 /////////////////////////////////////////////////////
-///               Cocktail
+///               New Cocktail
 /////////////////////////////////////////////////////
 
 .create-container {
     background-color: $grey;
     width: 100%;
-    height: 400px;
+    // height: 400px;
 }
 
 .create-title-flex {
@@ -350,12 +422,13 @@ body {
     margin: 2vh 0;
 }
 
-.inputs-flex {
+.inputs-hor-flex {
     @include horizontal-center;
 }
 
 .inputs-vert-flex {
     @include vertical-center;
+    width: 80%;
 }
 
 .inputs-submit {
@@ -365,12 +438,24 @@ body {
     background-color: $orange;
     border: none;
     font-size: 1rem;
+    margin-bottom: 2vh;
 }
 
 .cocktail-input {
     background-color: $grey;
     border: none;
     border-bottom: 2px solid $orange;
-    width: 80%;
+    width: 100%;
     margin: 1vw 0;
+}
+
+.ingredient-input-group {
+    display: flex; 
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 80%;
+
+    > label {
+        width: 120%;
+    }
 }

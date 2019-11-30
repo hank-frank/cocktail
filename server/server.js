@@ -176,7 +176,8 @@ app.get('/byId', (req, res) => {
                 "both": both.filter((each) => {
                     return each != `${null} ${null}`;
                 }),
-                "source": "api"
+                "source": "api",
+                "favorite": false
             }
             console.log(`backend random cocktail: `, formattedDrink);
             res.send(formattedDrink);

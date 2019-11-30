@@ -12,13 +12,13 @@ function SearchBar (props) {
     useEffect(() => {
         if (window.location.href === 'http://localhost:8000/#/oneCocktail') {
             setConditionalLink(
-                <Link to='/oneCocktail'>
                     <button className="random-button" onClick={ ()=> props.getRandom()}>I don't care, give me anything...</button>
-                </Link>
             )
         } else {
             setConditionalLink(
-                <button className="random-button" onClick={ ()=> props.getRandom()}>I don't care, give me anything...</button>
+                <Link to='/oneCocktail'>
+                    <button className="random-button" onClick={ ()=> props.getRandom()}>I don't care, give me anything...</button>
+                </Link>
             )
         }
     }, [window.location.href]);

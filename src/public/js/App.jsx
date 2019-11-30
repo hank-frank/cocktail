@@ -15,6 +15,8 @@ function App() {
     const [searchResult, setSearchResult] = useState([]);
     const [current, setCurrent] = useState({});
     const [historyArray, setHistoryArray] = useState([]);
+    const [newArray, setNewArray] = useState([]);
+    const [favoritesArray, setFavoritesArray] = useState([]);
 
 
     const getRandomCocktail = () => {
@@ -59,16 +61,23 @@ function App() {
     }
 
     const recallHistory = (id) => {
-        console.log(id);
         let tempArray = historyArray;
         for (let i = 0; i < tempArray.length; i++) {
-            console.log("inside for loop")
             if (tempArray[i].id === id) {
-                console.log("inside if")
                 setCurrent(tempArray[i]);
             }
         }
     };
+
+    const addCocktail = (cocktailObject) => {
+        let tempArray = newArray; 
+        tempArray.push(cocktailObject);
+        setNewArray(tempArray);
+    }
+
+    const makeFavorite = (cocktail) => {
+//do stuff
+    }
 
     const forTesting = () => {
         // getById(12402);
@@ -77,6 +86,7 @@ function App() {
         // console.log(`cocktail byId: `, byId);
         console.log(`historyArray: `, historyArray);
         console.log(`current: `, current)
+        console.log(`newArray: `, newArray)
     }
 
     return(
@@ -99,11 +109,12 @@ function App() {
                 <Cocktail
                     drinksArray = { searchResult }
                     cocktail = { current }
+                    makeFavorite = { makeFavorite }
                 />
             </Route>
-            <Route exact path="/createNew">
-                <Create
-                    
+            <Route path='/addCocktail'>
+                <Create 
+                    addCocktail = { addCocktail }
                 />
             </Route>
             </div>
