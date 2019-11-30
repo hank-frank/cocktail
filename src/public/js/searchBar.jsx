@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect, withRouter, History } from 'react-router-dom';
 
 import { useInput } from '../../hooks/useInput.jsx';
 
@@ -7,6 +7,8 @@ import { useInput } from '../../hooks/useInput.jsx';
 function SearchBar (props) {
     const [searchValue, setSearchValue] = useState("");
     const [conditionalLink, setConditionalLink] = useState('');
+    const [shouldRedirect, setShouldRedirect] = useState(false);
+
     const {value, bind, reset } = useInput('');
 
     useEffect(() => {
@@ -28,7 +30,21 @@ function SearchBar (props) {
         props.search(value);
         console.log(value);
         reset();
+        setShouldRedirect(true);
+        routingForSearch();
     }
+
+    const routingForSearch = () => {
+        if (shouldRedirect === true) {
+            return(
+                <Redirect to='/searchContents' />
+            )
+        };
+    };
+
+    useEffect(() => {
+        setShouldRedirect(false);
+    }, [shouldRedirect])
 
     return (
         <>
@@ -42,10 +58,9 @@ function SearchBar (props) {
                     { ...bind}
                     />
                 </label>
-                {/* <Link to='/searchResults'> */}
                     <input className="submit-button" type="submit" value="Search" />
-                {/* </Link> */}
             </form>
+                { routingForSearch() }
         </div>
         <div className="random-flex">
             { conditionalLink }
