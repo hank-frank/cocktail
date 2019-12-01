@@ -1,22 +1,44 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 
 function Cocktail (props) {
     const [toggleState, setToggleState] = useState(false);
+    const [backToSearch, setBackToSearch] = useState(false);
 
     useEffect(() => {
         setToggleState(false);
     },[props])
 
-    let checkToggle = () => {
+    const checkToggle = () => {
         setToggleState(!toggleState);
         let tempCocktail = props.cocktail;
         tempCocktail.favorite = toggleState;
         props.makeFavorite(tempCocktail);
     };
+
+    const handleBackClick = () => {
+        console.log("getting clicked1", backToSearch)
+        setBackToSearch(true);
+    }
+
+    const routeToSearch = () => {
+        if (backToSearch === true) {
+            return (
+            <Redirect to='/searchContents' />
+            )
+        }
+    };
+
+    useEffect(() => {
+        setBackToSearch(false);
+    }, [backToSearch])
     
     return (
         <>
             <div className="one-cocktail-container">
+                <div className="back-container" onClick={ () => handleBackClick() }>
+                    { routeToSearch() }
+                </div>
                 <div className="cocktail-content">                 
                     <div className="first-row">
                         

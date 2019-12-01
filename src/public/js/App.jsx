@@ -8,6 +8,7 @@ import History from './history.jsx';
 import Favorites from './favorites.jsx';
 import Cocktail from './oneCocktail.jsx';
 import Create from './createNew.jsx';
+import Welcome from './welcome.jsx'
 
 function App() {
     const [randomCocktail, setRandomCocktail] = useState({});
@@ -18,12 +19,14 @@ function App() {
     const [newArray, setNewArray] = useState([]);
     const [allViewed, setAllViewed] = useState([]);
     const [favoritesArray, setFavoritesArray] = useState([]);
+    const [noIngredient, setNoIngredient] = useState("");
 
     useEffect(() => {
         let eachViewed = current;
         let localViewed = allViewed;
         localViewed.push(eachViewed);
         setAllViewed(localViewed);
+        resetNoIngredient();
     }, [current])
 
     useEffect(() => {
@@ -64,7 +67,10 @@ function App() {
             setSearchResult(cocktailArray)
             console.log(cocktailArray)
         })
-        .catch(err => console.error(`whoopsies ingredient`, err))
+        .catch((err) => {
+            console.error(`whoopsies ingredient`, err);
+            setNoIngredient(`Whoopsies... No cocktails with ${searchValue}, try again.`)
+        })
     }
 
     const getById = (cocktailId) => {
@@ -104,18 +110,22 @@ function App() {
         setFavoritesArray(localFavorites);
     }
 
+    const resetNoIngredient = () => {
+        setNoIngredient("");
+    };
+
     const forTesting = () => {
         // getById(12402);
         // console.log('site url: ', window.location.href);
         // console.log(`random cocktail: `, randomCocktail);
         // console.log(`cocktail byId: `, byId);
-        // console.log(`historyArray: `, historyArray);
+        console.log(`historyArray: `, historyArray);
         // console.log(`current: `, current);
         // console.log(`newArray: `, newArray);
+        // console.log(`user input cocktails: `, newArray)
         console.log(`all viewed: `, allViewed);
-        console.log(`all favorites: `, favoritesArray);
-        console.log(`search result: `, searchResult);
-
+        // console.log(`all favorites: `, favoritesArray);
+        // console.log(`search result: `, searchResult);
     }
 
     return(
@@ -127,9 +137,14 @@ function App() {
             <SearchBar 
                 search = { searchByIngredient }
                 getRandom = { getRandomCocktail }
+                noIngredient = { noIngredient }
+                resetNoIngredient = { resetNoIngredient }
             />
             <div className="main-container">
                 <div className="left-area-container">
+                    <Route exact path="/">
+                        <Welcome />
+                    </Route>
                     <Route path="/searchContents">
                         <SearchResults
                             drinksArray = { searchResult }

@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 
 function SearchResult (props) {
 
-    useEffect(() => {
-
-        console.log(`props: `, props)
-    }, [props])
+    // useEffect(() => {
+    //     console.log(`props: `, props)
+    // }, [props])
 
     return (
         <>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Redirect, withRouter, History } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import { useInput } from '../../hooks/useInput.jsx';
 
@@ -28,10 +28,10 @@ function SearchBar (props) {
     const handleSubmit = (evt) => {
         evt.preventDefault();
         props.search(value);
-        console.log(value);
         reset();
         setShouldRedirect(true);
         routingForSearch();
+        props.resetNoIngredient();
     }
 
     const routingForSearch = () => {
@@ -64,6 +64,9 @@ function SearchBar (props) {
         </div>
         <div className="random-flex">
             { conditionalLink }
+        </div>
+        <div className="no-ingredient-flex">
+            <h4 className="no-ingredient"> { props.noIngredient }</h4>
         </div>
         </>
     )

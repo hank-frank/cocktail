@@ -1,13 +1,33 @@
 const express = require('express');
 const axios = require('axios');
+const mysql = require('mysql');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = express();
+const con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "AfkVVRg963xP2kc",
+    database: "testDB"
+});
+
+// con.connect(function(err) {
+//     if (err) throw err;
+//     console.log("Connected baby!");
+//     var sql = "CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))";
+//     con.query(sql, function (err, result) {
+//         if (err) throw err;
+//         console.log("table testDB created");
+//     });
+// });
 
 app.use(express.static('dist'));
 app.use(express.static('src'));
 
 app.get('/randomCocktail', (req, res) => {
-    axios.get(`https://www.thecocktaildb.com/api/json/v1/1/random.php`)
+    axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/random.php`)
         .then((result) => {
             let ingredients = [
                 result.data.drinks[0].strIngredient1,
@@ -92,7 +112,7 @@ app.get('/randomCocktail', (req, res) => {
 app.get('/byIngredient', (req, res) => {
     console.log(`req coming in`)
     let searchValue = req.query.search;
-    axios.get(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${searchValue}`)
+    axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/filter.php?i=${searchValue}`)
         .then((result) => { 
             console.log(`result: `, result.data)
             res.send(result.data.drinks);
@@ -106,7 +126,7 @@ app.get('/byIngredient', (req, res) => {
 app.get('/byId', (req, res) => {
     let cocktailId = req.query.id;
     console.log(`req.query`, cocktailId);
-    axios.get(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`)
+    axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/lookup.php?i=${cocktailId}`)
         .then((result) => {
             console.log(`byId result: `, result.data.drinks)
             let ingredients = [
@@ -188,5 +208,7 @@ app.get('/byId', (req, res) => {
             res.send('An error occured.');
     })
 });
+
+
 
 module.exports = app;
