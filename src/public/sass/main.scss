@@ -100,7 +100,7 @@ body {
 }
 
 /////////////////////////////////////////////////////
-///               Search
+///               Search Bar
 /////////////////////////////////////////////////////
 
 .back-container {
@@ -121,7 +121,7 @@ body {
 
 .search-section {
     @include horizontal-center;
-    margin: 0;
+    margin: 3vh 0 0 0;
 }
 
 .search-label {

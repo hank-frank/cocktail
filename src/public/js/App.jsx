@@ -143,9 +143,9 @@ function App() {
     return(
         <Router>
             <Header />
-            <div className="test-button-container">
+            {/* <div className="test-button-container">
                 <button className="test-button" onClick={ ()=> forTesting()}>Testing!</button>
-            </div>
+            </div> */}
             <SearchBar 
                 search = { searchByIngredient }
                 getRandom = { getRandomCocktail }
