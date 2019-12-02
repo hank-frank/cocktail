@@ -123,6 +123,18 @@ app.get('/byIngredient', (req, res) => {
         })
 });
 
+app.get('/tenRandom', (req, res) => {
+    axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/randomselection.php`)
+        .then((result) => { 
+            console.log(`result: `, result.data)
+            res.send(result.data.drinks);
+        })
+        .catch((error) => {
+            console.error(error);
+            res.send('An error occured.');
+        })
+});
+
 app.get('/byId', (req, res) => {
     let cocktailId = req.query.id;
     console.log(`req.query`, cocktailId);

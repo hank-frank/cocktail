@@ -57,6 +57,18 @@ function App() {
             .catch(err => console.error(`whoopsies random`, err))
     };
 
+    const getTen = () => {
+        fetch(`/tenRandom`)
+            .then((response) => {
+                return response = response.json()
+            })
+            .then((cocktailArray) => {
+                setSearchResult(cocktailArray)
+                console.log(cocktailArray)
+            })
+            .catch(err => console.error(`whoopsies random ten: `, err))
+    };
+
     const searchByIngredient = (searchValue) => {
         console.log(`fetch: `, searchValue)
         fetch(`byIngredient?search=${searchValue}`)
@@ -137,6 +149,7 @@ function App() {
             <SearchBar 
                 search = { searchByIngredient }
                 getRandom = { getRandomCocktail }
+                getTen = { getTen }
                 noIngredient = { noIngredient }
                 resetNoIngredient = { resetNoIngredient }
             />

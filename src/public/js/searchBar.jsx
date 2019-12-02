@@ -11,19 +11,23 @@ function SearchBar (props) {
 
     const {value, bind, reset } = useInput('');
 
-    useEffect(() => {
-        if (window.location.href === 'http://localhost:8000/#/oneCocktail') {
-            setConditionalLink(
-                    <button className="random-button" onClick={ ()=> props.getRandom()}>I don't care, give me anything...</button>
-            )
-        } else {
-            setConditionalLink(
-                <Link to='/oneCocktail'>
-                    <button className="random-button" onClick={ ()=> props.getRandom()}>I don't care, give me anything...</button>
-                </Link>
-            )
-        }
-    }, [window.location.href]);
+    // useEffect(() => {
+    //     if (window.location.href === 'http://localhost:8000/#/oneCocktail') {
+    //         setConditionalLink(
+    //             <>
+    //                 <button className="random-button" onClick={ ()=> props.getRandom() }>I don't care, give me anything...</button>
+    //                 <button className="random-button" onClick={ () => props.getTen() }>Show me any 10... </button>
+    //             </>
+    //         )
+    //     } else {
+    //         setConditionalLink(
+    //             <Link to='/oneCocktail'>
+    //                 <button className="random-button" onClick={ ()=> props.getRandom() }>I don't care, give me one of anything...</button>
+    //                 <button className="random-button" onClick={ () => props.getTen() }>Show me any 10... </button>
+    //             </Link>
+    //         )
+    //     }
+    // }, [window.location.href]);
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
@@ -63,7 +67,13 @@ function SearchBar (props) {
                 { routingForSearch() }
         </div>
         <div className="random-flex">
-            { conditionalLink }
+            {/* { conditionalLink } */}
+            <Link to='/oneCocktail'>
+                <button className="random-button" onClick={ ()=> props.getRandom() }>I don't care, give me one of anything...</button>
+            </Link>
+            <Link to='./searchContents'>
+                <button className="random-button" onClick={ () => props.getTen() }>Show me any 10... </button>
+            </Link>
         </div>
         <div className="no-ingredient-flex">
             <h4 className="no-ingredient"> { props.noIngredient }</h4>

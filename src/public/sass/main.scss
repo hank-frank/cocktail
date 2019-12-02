@@ -169,6 +169,7 @@ body {
     border: none;
     color: $grey;
     font-size: 1rem;
+    margin: 0 1vw;
 }
 
 .random-button:hover {
@@ -193,6 +194,18 @@ body {
 /////////////////////////////////////////////////////
 ///               search results
 /////////////////////////////////////////////////////
+
+.havent-searched-flex {
+    @include horizontal-center;
+    width: 80%;
+}
+
+.havent-searched {
+    color: $orange;
+    font-size: 2rem;
+    text-align: center;
+
+}
 
 .main-container {
     margin: 4vh 3vw;
