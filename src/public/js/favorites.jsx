@@ -6,8 +6,8 @@ function Favorites (props) {
 
     useEffect(() => {
 
-       let favs =  updateFavorites(props);
-       setFavoritesList(favs);
+        let favs =  updateFavorites(props);
+        setFavoritesList(favs);
     }, [props])
 
     const updateFavorites = (props) => {

@@ -51,8 +51,11 @@ function Cocktail (props) {
                             </label>
                             <div className="title-box">
                                     <h4 className="ingredient-title">Type of Glass: </h4>
-                                </div>
+                            </div>
+                            <div className="horizontal-glass">
                                 <p className="glass-type">{ props.cocktail.glass ? props.cocktail.glass : "glass"}</p>
+                                <div className="pint" />
+                            </div>
                             <div className="ingredient-container">
                                 <div className="title-box">
                                     <h4 className="ingredient-title">Ingredients</h4>

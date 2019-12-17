@@ -70,14 +70,12 @@ function App() {
     };
 
     const searchByIngredient = (searchValue) => {
-        console.log(`fetch: `, searchValue)
         fetch(`byIngredient?search=${searchValue}`)
         .then((response) => {
             return response = response.json()
         })
         .then ((cocktailArray) => {
             setSearchResult(cocktailArray)
-            console.log(cocktailArray)
         })
         .catch((err) => {
             console.error(`whoopsies ingredient`, err);
@@ -109,11 +107,23 @@ function App() {
         }
     };
 
-    const addCocktail = (cocktailObject) => {
+    const addCocktail = async (cocktailObject) => {
         let tempArray = newArray; 
         tempArray.push(cocktailObject);
         setNewArray(tempArray);
-    }
+        console.log(`cocktail from addFunction: `, cocktailObject)
+        console.log(`json string`, JSON.stringify(cocktailObject));
+        const rawResponse = await fetch('createNew', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cocktailObject)
+    });
+    const content = await rawResponse.json();
+    console.log(content);
+}
 
     const makeFavorite = (cocktail) => {
         let eachViewed = current;

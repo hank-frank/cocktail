@@ -52,6 +52,53 @@ function SearchBar (props) {
 
     return (
         <>
+        {/* <div className="horizontal-center">
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+            <div className="cocktail-bubble">
+                <div className="vertical-center">
+                    <div className="glass-image" />
+                </div>
+            </div>
+        </div> */}
         <div className="search-section">
             <form onSubmit={ handleSubmit }>
                 <label className="search-label">

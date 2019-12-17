@@ -1,30 +1,39 @@
 const express = require('express');
 const axios = require('axios');
-const mysql = require('mysql');
 const dotenv = require('dotenv');
+// const mysql = require('mysql');
 
 dotenv.config();
 
 const app = express();
-const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "AfkVVRg963xP2kc",
-    database: "testDB"
-});
 
-// con.connect(function(err) {
-//     if (err) throw err;
-//     console.log("Connected baby!");
-//     var sql = "CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))";
-//     con.query(sql, function (err, result) {
-//         if (err) throw err;
-//         console.log("table testDB created");
-//     });
+// const con = mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     password: "AfkVVRg963xP2kc",
+//     database: "testDB"
 // });
 
+const sequelize = require('./util/database.js');
+
+const Receptacle = require('./models/receptacleModel.js');
+
+const receptacleRoutes = require('./routes/receptacleRoutes.js');
+
+sequelize
+    .authenticate()
+    .then(() => {
+        console.log('Connection has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });
+
+
 app.use(express.static('dist'));
-app.use(express.static('src'));
+// app.use(express.static('src'));
+
+app.use(express.json());
 
 app.get('/randomCocktail', (req, res) => {
     axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/random.php`)
@@ -121,6 +130,9 @@ app.get('/byIngredient', (req, res) => {
             console.error(error);
             res.send('An error occured.');
         })
+
+        //this is here for multi ingredient searches. 
+        //https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=Dry_Vermouth,Gin,Anis
 });
 
 app.get('/tenRandom', (req, res) => {
@@ -220,6 +232,48 @@ app.get('/byId', (req, res) => {
             res.send('An error occured.');
     })
 });
+
+app.post('/createNew', (req, res) => {
+let testCocktail = {
+    "name": 'lemon something',
+    "category": "alcoholic",
+    "glass": "bucket",
+    "instructions": "dump it all in", 
+    "ingredients": [
+        "vodka", "gin", "lemons", "campari", "antica"
+    ],
+    "units": [
+        1, 1, 1, 1, 2
+    ],
+    "both": [
+        "1 vodka", "1 gin", "1 lemons", "1 campari", "2 antica"
+    ],
+    "source": "local",
+    "favorite": "false"
+}
+
+    let cocktailObject = req.body;
+    console.log(`post to backend createNew route worked:`, cocktailObject);
+    // con.connect(function(err) {
+    //     if (err) throw err;
+    //     console.log("Connected baby!");
+    //     var sql = "";
+    //     con.query(sql, function (err, result) {
+    //         if (err) throw err;
+    //         console.log("A cocktail was added to the DB Chief!");
+    //     });
+    // });
+});
+
+// con.connect(function(err) {
+//     if (err) throw err;
+//     console.log("Connected baby!");
+//     var sql = "CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))";
+//     con.query(sql, function (err, result) {
+//         if (err) throw err;
+//         console.log("table testDB created");
+//     });
+// });
 
 
 

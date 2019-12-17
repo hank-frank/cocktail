@@ -40,7 +40,7 @@ function Create (props) {
     
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        console.log(`Capturing ${name} ${glass} ${category} ${instructions} ${ingredient1} ${unit2}`);
+        // console.log(`Capturing locally: ${name} ${glass} ${category} ${instructions} ${ingredient1} ${unit2}`);
         let id = 0
         let units = [
             unit1,
@@ -100,13 +100,13 @@ function Create (props) {
             "glass": glass,
             "instructions": instructions,
             "ingredients": ingredients.filter((each) => {
-                return each != null || undefined
+                return each != ''
             }),
             "units": units.filter((each) => {
-                return each != null || undefined
+                return each != ''
             }),
             "both": both.filter((each) => {
-                return each != `${null} ${null}`
+                return each != ' '
             }),
             "source": "local",
             "favorite": "false"
@@ -114,6 +114,7 @@ function Create (props) {
         id++
 
         props.addCocktail(newCocktail);
+        console.log(`cocktail from all component: `, newCocktail)
 
         resetname();
         resetglass();
