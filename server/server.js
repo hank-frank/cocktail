@@ -16,9 +16,19 @@ const app = express();
 
 const sequelize = require('./util/database.js');
 
+const Cocktail = require('./models/cocktailModel.js')
 const Receptacle = require('./models/receptacleModel.js');
+const Ingredient = require('./models/ingredientModel.js')
 
+const cocktailRoutes = require('./routes/cocktailRoutes.js');
 const receptacleRoutes = require('./routes/receptacleRoutes.js');
+const ingredientRoutes = require('./routes/ingredientRoutes.js');
+
+Cocktail.hasOne(Receptacle);
+Receptacle.belongsToMany(Cocktail, {through: 'Receptacle_Cocktail'});
+Cocktail.hasMany(Ingredient);
+Ingredient.belongsToMany(Cocktail, {through: 'Ingredient_Cocktail'});
+
 
 sequelize
     .authenticate()
@@ -28,6 +38,17 @@ sequelize
     .catch(err => {
         console.error('Unable to connect to the database:', err);
     });
+// sequelize.sync();
+
+
+Cocktail.create({
+    api_id: "12345",
+    cocktail_name: "Watermelon Thunder",
+    instructions: "make it real good",
+    source: "backend testing"
+}).then((cocktail) => {
+    console.log(`a new cocktail: `, cocktail.id)
+})
 
 
 app.use(express.static('dist'));
