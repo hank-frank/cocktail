@@ -24,10 +24,10 @@ const cocktailRoutes = require('./routes/cocktailRoutes.js');
 const receptacleRoutes = require('./routes/receptacleRoutes.js');
 const ingredientRoutes = require('./routes/ingredientRoutes.js');
 
-Cocktail.hasOne(Receptacle);
-Receptacle.belongsToMany(Cocktail, {through: 'Receptacle_Cocktail'});
-Cocktail.hasMany(Ingredient);
-Ingredient.belongsToMany(Cocktail, {through: 'Ingredient_Cocktail'});
+Cocktail.Receptacle = Cocktail.hasOne(Receptacle);
+// Receptacle.belongsToMany(Cocktail, {through: 'Receptacle_Cocktail'});
+Cocktail.Ingredients = Cocktail.hasMany(Ingredient);
+// Ingredient.belongsToMany(Cocktail, {through: 'Ingredient_Cocktail'});
 
 
 sequelize
@@ -41,14 +41,63 @@ sequelize
 // sequelize.sync();
 
 
-Cocktail.create({
-    api_id: "12345",
-    cocktail_name: "Watermelon Thunder",
-    instructions: "make it real good",
-    source: "backend testing"
-}).then((cocktail) => {
-    console.log(`a new cocktail: `, cocktail.id)
+// Cocktail.create({
+//     api_id: "12345",
+//     cocktail_name: "Watermelon Thunder",
+//     instructions: "make it real good",
+//     source: "backend testing",
+//     ingredients: [
+//         {ingredient_name: "Teeth"},
+//         {ingredient_name: "unicorn horn"}
+//     ],
+//     receptacle: {
+//         receptacle_name: "Bucket"
+//     }
+// }, {
+//     include: [{
+//         association: Cocktail.Receptacle,
+//         association: Cocktail.Ingredients
+//     }]
+// })
+// .then((cocktail) => {
+//     console.log(`cocktail: `, cocktail);
+    
+// })
+
+Cocktail.findAll({
+    where: {
+        cocktail_name: "Watermelon Thunder"
+    }
+}).then((cocktails) => {
+    console.log(`cocktailtest: `, cocktails)
+    // Receptacle.findAll({
+    //     where: {
+    //         cocktailIdCocktail: cocktail.dataValues
+    //     }
+    // }).then((receptacle) => {
+    //     cocktail.glass = receptacle;
+    //     console.log(`from receptacle .then: `, cocktail)
+    // })
+    // console.log(cocktail);
 })
+
+// Receptacle.findAll()
+// .then((glass)=> {
+//     console.log(glass);
+// })
+
+// Ingredient.findAll()
+// .then((ingredients) => {
+//     console.log(ingredients);
+// })
+
+
+// defaults: {
+//     api_id: "default id",
+//     cocktail_name: "default name",
+//     instructions: "default instructions",
+//     source: "default source"
+// }
 
 
 app.use(express.static('dist'));
