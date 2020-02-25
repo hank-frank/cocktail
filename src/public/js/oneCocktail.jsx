@@ -31,11 +31,11 @@ function Cocktail (props) {
 
     const sendItOnBack = () => {
         let {id, name, category, glass, instructions, deutschInstructions, image, ingredients, units, both, source } = props.cocktail;
-        fetch(`/dbTest?id=${id}&name=${name}&glass=${glass}&instructions=${instructions}&both=${both}&source=${source}`)
+        fetch(`/dbTest?id=${id}&name=${name}&glass=${glass}&instructions=${instructions}&both=${both}&source=${source}&category=${category}`)
             .then((response) => {
                 return response = response.json()
             })
-            .catch(err => console.error(`whoopsies random`, err))
+            .catch(err => console.error(`whoopsies sendItBack`, err))
     }
 
     const getOne = () => {
@@ -46,7 +46,7 @@ function Cocktail (props) {
                 console.log(res);
                 props.forTesting(res);
             })
-            .catch(err => console.error(`whoopsies random`, err))
+            .catch(err => console.error(`whoopsies getOne`, err))
     }
 
     useEffect(() => {

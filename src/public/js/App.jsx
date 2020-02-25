@@ -108,11 +108,6 @@ function App() {
     };
 
     const addCocktail = async (cocktailObject) => {
-    //     let tempArray = newArray; 
-    //     tempArray.push(cocktailObject);
-    //     setNewArray(tempArray);
-    //     console.log(`cocktail from addFunction: `, cocktailObject)
-    //     console.log(`json string`, JSON.stringify(cocktailObject));
         const rawResponse = await fetch('createNew', {
             method: 'POST',
             headers: {
@@ -120,10 +115,10 @@ function App() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(cocktailObject)
-    });
-    const content = await rawResponse.json();
-    console.log(`from addCocktail: `, cocktailObject);
-}
+        });
+        const content = await rawResponse.json();
+        console.log(`content from addCocktail: `, content);
+    }
 
     const makeFavorite = (cocktail) => {
         let eachViewed = current;
@@ -137,7 +132,9 @@ function App() {
     };
 
     const forTesting = (cocktail) => {
-       setCurrent(cocktail);
+        setCurrent(cocktail);
+        console.log(`from App cocktail: `, cocktail);
+        console.log(`from App current: `, current);
     }
 
     return(

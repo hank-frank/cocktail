@@ -20,14 +20,14 @@ const Cocktail = require('./models/cocktailModel.js')
 const Receptacle = require('./models/receptacleModel.js');
 const Ingredient = require('./models/ingredientModel.js')
 
-const cocktailRoutes = require('./routes/cocktailRoutes.js');
-const receptacleRoutes = require('./routes/receptacleRoutes.js');
-const ingredientRoutes = require('./routes/ingredientRoutes.js');
+// const cocktailRoutes = require('./routes/cocktailRoutes.js');
+// const receptacleRoutes = require('./routes/receptacleRoutes.js');
+// const ingredientRoutes = require('./routes/ingredientRoutes.js');
 
-Cocktail.Receptacle = Cocktail.hasOne(Receptacle);
+Cocktail.Receptacles = Cocktail.hasOne(Receptacle);
 // Receptacle.belongsToMany(Cocktail, {through: 'Receptacle_Cocktail'});
 Cocktail.Ingredients = Cocktail.hasMany(Ingredient);
-// Ingredient.belongsToMany(Cocktail, {through: 'Ingredient_Cocktail'});
+
 
 
 sequelize
@@ -39,8 +39,6 @@ sequelize
         console.error('Unable to connect to the database:', err);
     });
 // sequelize.sync();
-
-
 // Cocktail.create({
 //     api_id: "12345",
 //     cocktail_name: "Watermelon Thunder",
@@ -55,9 +53,10 @@ sequelize
 //     }
 // }, {
 //     include: [{
-//         association: Cocktail.Receptacle,
+//         association: Cocktail.Receptacle
+//     }, {
 //         association: Cocktail.Ingredients
-//     }]
+// }]
 // })
 // .then((cocktail) => {
 //     console.log(`cocktail: `, cocktail);
@@ -93,15 +92,6 @@ sequelize
 //     console.log(ingredients);
 // })
 
-
-// defaults: {
-//     api_id: "default id",
-//     cocktail_name: "default name",
-//     instructions: "default instructions",
-//     source: "default source"
-// }
-
-
 app.use(express.static('dist'));
 // app.use(express.static('src'));
 
@@ -132,56 +122,51 @@ app.get('/dbTest', (req, res) => {
         source: source,
         ingredients: formatIngredients(),
         receptacle: {
-            receptacle_name: "Bucket"
+            receptacle_name: glass
         }
     }, {
         include: [{
-            association: Cocktail.Receptacle,
+            association: Cocktail.Receptacles
+        }, {
             association: Cocktail.Ingredients
         }]
     })
     .then((cocktail) => {
-        console.log(`cocktail: `, cocktail);
-        
+        console.log(`cocktail after insert: `, cocktail);
     })
-    
-    console.log(`incomming: `, id, name, glass, instructions, both, source);
+    .catch((err) => console.log(`create: `, err));
+
+    console.log(`incomming data: `, id, name, glass, instructions, both, source);
 })
 
 app.get('/getOne', (req, res) => {
     Cocktail.findOne({
-        where: { cocktail_name: 'Shark Attack'},
+        where: { cocktail_name: 'Moscow Mule'},
+        include: [Ingredient, Receptacle],
     }).then((cocktail) => {
-        // console.log(`from getOne: `, cocktail.dataValues);
         let { id_cocktail, cocktail_name, instructions } = cocktail.dataValues;
-        Ingredient.findAll({
-            where: {cocktailIdCocktail: id_cocktail}
-        }) .then((ingredients) => {
-            let newIngredients = [];
-            ingredients.forEach((each) => {
-                // console.log(each.dataValues.ingredient_name);
-                newIngredients.push(each.dataValues.ingredient_name);
-            })
-
-                formattedDrink = {
-                    "id": id_cocktail,
-                    "name": cocktail_name,
-                    "category": "alcoholic",
-                    "glass": " glass to come",
-                    "instructions": instructions,
-                    "deutschInstructions": 'toCOme',
-                    "image": "",
-                    "ingredients": newIngredients,
-                    "units": "not using? ",
-                    "both": newIngredients,
-                    "source": "dB",
-                    "favorite": false
-                }
-                res.send(formattedDrink);
-            console.log(`from second ping: `, formattedDrink);
+        let glass = cocktail.dataValues.receptacle.dataValues.receptacle_name;
+        let ingArr = cocktail.dataValues.ingredients;
+        let newIngredients = [];
+        ingArr.forEach((each) => {
+            newIngredients.push(each.dataValues.ingredient_name);
         })
 
-    })
+        formattedDrink = {
+            "id": id_cocktail,
+            "name": cocktail_name,
+            "category": "alcoholic",
+            "glass": glass,
+            "instructions": instructions,
+            "image": "",
+            "ingredients": newIngredients,
+            "both": newIngredients,
+            "source": "dB",
+            "favorite": false
+        };
+
+        res.send(formattedDrink);
+    }).catch((err) => console.log(`create: `, err));
 });
 
 
