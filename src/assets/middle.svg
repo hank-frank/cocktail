@@ -16,6 +16,7 @@
 	.st10{fill:none;stroke:#383735;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
 	.st11{fill:none;stroke:#383735;stroke-width:7;stroke-miterlimit:10;}
 	.st12{fill:none;stroke:#383735;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st13{fill:none;stroke:#383735;stroke-width:9;stroke-miterlimit:10;}
 </style>
 <g id="Layer_2" class="st0">
 	<rect x="-550.2" y="-59" class="st1" width="664.1" height="842"/>
@@ -1041,5 +1042,18 @@
 			c9.5,2.6,15.2,12.6,12.6,22.1l-16.3,59.1C1706.1-424.1,1696.2-418.5,1686.6-421.1z"/>
 		<ellipse class="st4" cx="1654.8" cy="-704.4" rx="127.4" ry="21"/>
 	</g>
+	<ellipse class="st13" cx="-2748.4" cy="-451.9" rx="198.9" ry="32.3"/>
+	<path class="st13" d="M-2947.3,216.6c0,17.8,89.1,32.3,198.9,32.3c109.9,0,198.9-14.4,198.9-32.3"/>
+	<line class="st13" x1="-2947.3" y1="-451.9" x2="-2947.3" y2="216.6"/>
+	<line class="st13" x1="-2549.5" y1="-189.8" x2="-2549.5" y2="-287.2"/>
+	<line class="st13" x1="-2549.5" y1="216.6" x2="-2549.5" y2="-162.5"/>
+	<line class="st13" x1="-2549.5" y1="-330.1" x2="-2549.5" y2="-452"/>
+	<path class="st13" d="M-2412.1-1355.3c0,29.5-112.1,53.4-250.5,53.4c-138.3,0-250.5-23.9-250.5-53.4c0-29.5,112.2-53.4,250.5-53.4
+		C-2524.2-1408.7-2412.1-1384.8-2412.1-1355.3z"/>
+	<path class="st13" d="M-2913.1-812.1c0,29.5,112.2,53.4,250.5,53.4c138.3,0,250.5-23.9,250.5-53.4"/>
+	<line class="st13" x1="-2913.1" y1="-812.1" x2="-2913.1" y2="-1355.3"/>
+	<line class="st13" x1="-2412.1" y1="-812.1" x2="-2412.1" y2="-1355.3"/>
+	<circle class="st13" cx="-406.8" cy="375.9" r="103.6"/>
+	<circle class="st13" cx="-406.8" cy="375.9" r="17.7"/>
 </g>
 </svg>

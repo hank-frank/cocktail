@@ -108,11 +108,11 @@ function App() {
     };
 
     const addCocktail = async (cocktailObject) => {
-        let tempArray = newArray; 
-        tempArray.push(cocktailObject);
-        setNewArray(tempArray);
-        console.log(`cocktail from addFunction: `, cocktailObject)
-        console.log(`json string`, JSON.stringify(cocktailObject));
+    //     let tempArray = newArray; 
+    //     tempArray.push(cocktailObject);
+    //     setNewArray(tempArray);
+    //     console.log(`cocktail from addFunction: `, cocktailObject)
+    //     console.log(`json string`, JSON.stringify(cocktailObject));
         const rawResponse = await fetch('createNew', {
             method: 'POST',
             headers: {
@@ -122,7 +122,7 @@ function App() {
             body: JSON.stringify(cocktailObject)
     });
     const content = await rawResponse.json();
-    console.log(content);
+    console.log(`from addCocktail: `, cocktailObject);
 }
 
     const makeFavorite = (cocktail) => {
@@ -136,18 +136,8 @@ function App() {
         setNoIngredient("");
     };
 
-    const forTesting = () => {
-        // getById(12402);
-        // console.log('site url: ', window.location.href);
-        // console.log(`random cocktail: `, randomCocktail);
-        // console.log(`cocktail byId: `, byId);
-        console.log(`historyArray: `, historyArray);
-        // console.log(`current: `, current);
-        // console.log(`newArray: `, newArray);
-        // console.log(`user input cocktails: `, newArray)
-        console.log(`all viewed: `, allViewed);
-        // console.log(`all favorites: `, favoritesArray);
-        // console.log(`search result: `, searchResult);
+    const forTesting = (cocktail) => {
+       setCurrent(cocktail);
     }
 
     return(
@@ -179,6 +169,7 @@ function App() {
                             drinksArray = { searchResult }
                             cocktail = { current }
                             makeFavorite = { makeFavorite }
+                            forTesting={ forTesting }
                         />
                     </Route>
                     <Route path='/addCocktail'>

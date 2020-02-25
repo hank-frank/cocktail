@@ -68,7 +68,12 @@ body {
     background-color: $orange;
     margin: 2vh 2wv;
     align-self: center;
-    font-size: 2rem;
+    font-size: 1rem;
+}
+
+.test-button:hover {
+    background-color: $warm;
+    border: 2px solid $orange;
 }
 
 /////////////////////////////////////////////////////

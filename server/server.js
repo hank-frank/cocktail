@@ -51,7 +51,7 @@ sequelize
 //         {ingredient_name: "unicorn horn"}
 //     ],
 //     receptacle: {
-//         receptacle_name: "Bucket"
+//         receptacle_name: "A big Bucket"
 //     }
 // }, {
 //     include: [{
@@ -64,22 +64,24 @@ sequelize
     
 // })
 
-Cocktail.findAll({
-    where: {
-        cocktail_name: "Watermelon Thunder"
-    }
-}).then((cocktails) => {
-    console.log(`cocktailtest: `, cocktails)
-    // Receptacle.findAll({
-    //     where: {
-    //         cocktailIdCocktail: cocktail.dataValues
-    //     }
-    // }).then((receptacle) => {
-    //     cocktail.glass = receptacle;
-    //     console.log(`from receptacle .then: `, cocktail)
-    // })
-    // console.log(cocktail);
-})
+// Cocktail.findAll({
+//     where: {
+//         cocktail_name: "Watermelon Thunder"
+//     }
+// }).then((cocktails) => {
+//     cocktails.forEach((each) => {
+//         console.log(`forEach: `, each.dataValues.id_cocktail);
+//         Receptacle.findAll({
+//             where: {
+//                 cocktailIdCocktail: each.dataValues.id_cocktail
+//             }
+//         }).then((receptacle) => {
+//             each.glass = receptacle;
+//             console.log(`from receptacle .then: `, each)
+//         })
+//     })
+//     // console.log(cocktail);
+// })
 
 // Receptacle.findAll()
 // .then((glass)=> {
@@ -104,6 +106,85 @@ app.use(express.static('dist'));
 // app.use(express.static('src'));
 
 app.use(express.json());
+
+app.get('/dbTest', (req, res) => {
+    let id = req.query.id;
+    let name = req.query.name;
+    let glass = req.query.glass;
+    let instructions = req.query.instructions;
+    let both = req.query.both;
+    let source = req.query.source;
+
+    let ingArr = both.split(',');
+
+    function formatIngredients () {
+        return ingArr.map((ingredient) => {
+            return ( 
+                { ingredient_name: `${ingredient}`}
+            )
+        })
+    }
+
+    Cocktail.create({
+        api_id: id,
+        cocktail_name: name,
+        instructions: instructions,
+        source: source,
+        ingredients: formatIngredients(),
+        receptacle: {
+            receptacle_name: "Bucket"
+        }
+    }, {
+        include: [{
+            association: Cocktail.Receptacle,
+            association: Cocktail.Ingredients
+        }]
+    })
+    .then((cocktail) => {
+        console.log(`cocktail: `, cocktail);
+        
+    })
+    
+    console.log(`incomming: `, id, name, glass, instructions, both, source);
+})
+
+app.get('/getOne', (req, res) => {
+    Cocktail.findOne({
+        where: { cocktail_name: 'Shark Attack'},
+    }).then((cocktail) => {
+        // console.log(`from getOne: `, cocktail.dataValues);
+        let { id_cocktail, cocktail_name, instructions } = cocktail.dataValues;
+        Ingredient.findAll({
+            where: {cocktailIdCocktail: id_cocktail}
+        }) .then((ingredients) => {
+            let newIngredients = [];
+            ingredients.forEach((each) => {
+                // console.log(each.dataValues.ingredient_name);
+                newIngredients.push(each.dataValues.ingredient_name);
+            })
+
+                formattedDrink = {
+                    "id": id_cocktail,
+                    "name": cocktail_name,
+                    "category": "alcoholic",
+                    "glass": " glass to come",
+                    "instructions": instructions,
+                    "deutschInstructions": 'toCOme',
+                    "image": "",
+                    "ingredients": newIngredients,
+                    "units": "not using? ",
+                    "both": newIngredients,
+                    "source": "dB",
+                    "favorite": false
+                }
+                res.send(formattedDrink);
+            console.log(`from second ping: `, formattedDrink);
+        })
+
+    })
+});
+
+
 
 app.get('/randomCocktail', (req, res) => {
     axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/random.php`)
@@ -179,7 +260,6 @@ app.get('/randomCocktail', (req, res) => {
                 "source": "api",
                 "favorite": false
             }
-            console.log(`backend random cocktail: `, formattedDrink);
             res.send(formattedDrink);
         })
         .catch((error) => {
@@ -192,8 +272,7 @@ app.get('/byIngredient', (req, res) => {
     console.log(`req coming in`)
     let searchValue = req.query.search;
     axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/filter.php?i=${searchValue}`)
-        .then((result) => { 
-            console.log(`result: `, result.data)
+        .then((result) => {
             res.send(result.data.drinks);
         })
         .catch((error) => {
@@ -208,7 +287,6 @@ app.get('/byIngredient', (req, res) => {
 app.get('/tenRandom', (req, res) => {
     axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/randomselection.php`)
         .then((result) => { 
-            console.log(`result: `, result.data)
             res.send(result.data.drinks);
         })
         .catch((error) => {
@@ -219,10 +297,8 @@ app.get('/tenRandom', (req, res) => {
 
 app.get('/byId', (req, res) => {
     let cocktailId = req.query.id;
-    console.log(`req.query`, cocktailId);
     axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/lookup.php?i=${cocktailId}`)
         .then((result) => {
-            console.log(`byId result: `, result.data.drinks)
             let ingredients = [
                 result.data.drinks[0].strIngredient1,
                 result.data.drinks[0].strIngredient2,
@@ -294,7 +370,6 @@ app.get('/byId', (req, res) => {
                 "source": "api",
                 "favorite": false
             }
-            console.log(`backend random cocktail: `, formattedDrink);
             res.send(formattedDrink);
             })
         .catch((error) => {
@@ -304,47 +379,36 @@ app.get('/byId', (req, res) => {
 });
 
 app.post('/createNew', (req, res) => {
-let testCocktail = {
-    "name": 'lemon something',
-    "category": "alcoholic",
-    "glass": "bucket",
-    "instructions": "dump it all in", 
-    "ingredients": [
-        "vodka", "gin", "lemons", "campari", "antica"
-    ],
-    "units": [
-        1, 1, 1, 1, 2
-    ],
-    "both": [
-        "1 vodka", "1 gin", "1 lemons", "1 campari", "2 antica"
-    ],
-    "source": "local",
-    "favorite": "false"
-}
-
     let cocktailObject = req.body;
-    console.log(`post to backend createNew route worked:`, cocktailObject);
-    // con.connect(function(err) {
-    //     if (err) throw err;
-    //     console.log("Connected baby!");
-    //     var sql = "";
-    //     con.query(sql, function (err, result) {
-    //         if (err) throw err;
-    //         console.log("A cocktail was added to the DB Chief!");
-    //     });
-    // });
+
+    function formatIngredients () {
+        return cocktailObject.both.map((ingredient) => {
+            return ( 
+                { ingredient_name: `${ingredient}`}
+            )
+        })
+    }
+    
+    Cocktail.create({
+        api_id: cocktailObject.id,
+        cocktail_name: cocktailObject.name,
+        instructions: cocktailObject.instructions,
+        source: cocktailObject.source,
+        ingredients: formatIngredients(),
+        receptacles: {
+            receptacle_name: cocktailObject.glass
+        }
+    }, {
+        include: [{
+            association: Cocktail.Receptacle,
+            association: Cocktail.Ingredients
+        }]
+    })
+    .then((cocktail) => {
+        console.log(`new Created: `, cocktail);
+        
+    })
 });
-
-// con.connect(function(err) {
-//     if (err) throw err;
-//     console.log("Connected baby!");
-//     var sql = "CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))";
-//     con.query(sql, function (err, result) {
-//         if (err) throw err;
-//         console.log("table testDB created");
-//     });
-// });
-
 
 
 module.exports = app;

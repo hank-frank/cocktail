@@ -29,13 +29,35 @@ function Cocktail (props) {
         }
     };
 
+    const sendItOnBack = () => {
+        let {id, name, category, glass, instructions, deutschInstructions, image, ingredients, units, both, source } = props.cocktail;
+        fetch(`/dbTest?id=${id}&name=${name}&glass=${glass}&instructions=${instructions}&both=${both}&source=${source}`)
+            .then((response) => {
+                return response = response.json()
+            })
+            .catch(err => console.error(`whoopsies random`, err))
+    }
+
+    const getOne = () => {
+        fetch(`/getOne`)
+            .then((response) => {
+                return response = response.json()
+            }).then ((res) => {
+                console.log(res);
+                props.forTesting(res);
+            })
+            .catch(err => console.error(`whoopsies random`, err))
+    }
+
     useEffect(() => {
         setBackToSearch(false);
     }, [backToSearch])
     
     return (
         <>
-            <div className="one-cocktail-container">
+        <button className="test-button" onClick={ sendItOnBack } >Test button, sends cocktail to backend</button>            
+        <button className="test-button" onClick={ getOne } >Get one cocktail from DB</button> 
+        <div className="one-cocktail-container">
                 <div className="back-container" onClick={ () => handleBackClick() }>
                     { routeToSearch() }
                 </div>
