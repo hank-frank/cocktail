@@ -64,7 +64,6 @@ function App() {
             })
             .then((cocktailArray) => {
                 setSearchResult(cocktailArray)
-                console.log(cocktailArray)
             })
             .catch(err => console.error(`whoopsies random ten: `, err))
     };
@@ -75,7 +74,7 @@ function App() {
             return response = response.json()
         })
         .then ((cocktailArray) => {
-            setSearchResult(cocktailArray)
+            setSearchResult(cocktailArray);
         })
         .catch((err) => {
             console.error(`whoopsies ingredient`, err);
@@ -83,8 +82,8 @@ function App() {
         })
     }
 
-    const getById = (cocktailId) => {
-        fetch(`byId?id=${cocktailId}`)
+    const getById = (cocktailId, source) => {
+        fetch(`byId?id=${cocktailId}&source=${source}`)
         .then((response) => {
             return response = response.json()
         })
@@ -116,8 +115,8 @@ function App() {
             },
             body: JSON.stringify(cocktailObject)
         });
-        const content = await rawResponse.json();
-        console.log(`content from addCocktail: `, content);
+        const addedCocktail = await rawResponse.json();
+        console.log(`added cocktail: `, addedCocktail);
     }
 
     const makeFavorite = (cocktail) => {
@@ -131,7 +130,7 @@ function App() {
         setNoIngredient("");
     };
 
-    const forTesting = (cocktail) => {
+    const getOne = (cocktail) => {
         setCurrent(cocktail);
         console.log(`from App cocktail: `, cocktail);
         console.log(`from App current: `, current);
@@ -141,7 +140,7 @@ function App() {
         <Router>
             <Header />
             {/* <div className="test-button-container">
-                <button className="test-button" onClick={ ()=> forTesting()}>Testing!</button>
+                <button className="test-button" onClick={ ()=> getOne()}>Testing!</button>
             </div> */}
             <SearchBar 
                 search = { searchByIngredient }
@@ -166,7 +165,7 @@ function App() {
                             drinksArray = { searchResult }
                             cocktail = { current }
                             makeFavorite = { makeFavorite }
-                            forTesting={ forTesting }
+                            getOne={ getOne }
                         />
                     </Route>
                     <Route path='/addCocktail'>

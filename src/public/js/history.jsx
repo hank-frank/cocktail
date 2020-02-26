@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-function History (props) {
-    let testing = () => {
-        console.log(`from history: `, props.historyArray)
-    };
 
+function History (props) {
+
+        
     return (
         <>
             <div className="history-container">
@@ -21,7 +20,6 @@ function History (props) {
                         )
                     })
                 }
-                {/* <button onClick={ testing() }>tester</button> */}
             </div>
         </>
     )

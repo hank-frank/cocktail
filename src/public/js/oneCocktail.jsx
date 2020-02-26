@@ -17,7 +17,6 @@ function Cocktail (props) {
     };
 
     const handleBackClick = () => {
-        console.log("getting clicked1", backToSearch)
         setBackToSearch(true);
     }
 
@@ -43,15 +42,50 @@ function Cocktail (props) {
             .then((response) => {
                 return response = response.json()
             }).then ((res) => {
-                console.log(res);
-                props.forTesting(res);
+                props.getOne(res);
             })
             .catch(err => console.error(`whoopsies getOne`, err))
     }
 
     useEffect(() => {
         setBackToSearch(false);
-    }, [backToSearch])
+    }, [backToSearch]);
+
+    const glassicon = (glassType) => {
+        switch (glassType.toLowerCase()) {
+            case "highball glass":
+                return <div className="middle-glass" />
+                break;
+            case "cocktail glass":
+                return <div className="coup" />
+                break;
+            case "martini":
+            case "martini glass":
+                return <div className="martini" />
+                break;
+            case "shot":
+            case "shot glass":
+                return <div className="shot" />
+                break;
+            case "wine":
+            case "champagne flute":
+            case "wine glass":
+                return <div className="wine" />
+                break;
+            case "beer":
+            case "pint":
+            case "pint glass":
+            case "beer mug":
+                return <div className="pint" />
+                break;
+            case "whiskey sour glass":
+            case "old-fashioned glass":
+                return <div className="short" />
+                break;
+            default:
+                return <div className="straight" />
+        }
+    }
     
     return (
         <>
@@ -76,7 +110,7 @@ function Cocktail (props) {
                             </div>
                             <div className="horizontal-glass">
                                 <p className="glass-type">{ props.cocktail.glass ? props.cocktail.glass : "glass"}</p>
-                                <div className="pint" />
+                                { props.cocktail.glass ? glassicon(props.cocktail.glass) : ""}
                             </div>
                             <div className="ingredient-container">
                                 <div className="title-box">
@@ -98,7 +132,7 @@ function Cocktail (props) {
                         </div>
                         <div className="image-holder-col">
                             <div className="image-holder-row">
-                                <img className="temp-image" src={ props.cocktail.image }/>
+                                { props.cocktail.image == "noImage" || props.cocktail.image == "" ? <div className="noImage">No Image Avaialble</div> : <img className="temp-image" src={ props.cocktail.image }/>}
                             </div>
                         </div>
                     </div>

@@ -1,18 +1,11 @@
 const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
-// const mysql = require('mysql');
+const { Op } = require("sequelize");
 
 dotenv.config();
 
 const app = express();
-
-// const con = mysql.createConnection({
-//     host: "localhost",
-//     user: "root",
-//     password: "AfkVVRg963xP2kc",
-//     database: "testDB"
-// });
 
 const sequelize = require('./util/database.js');
 
@@ -20,15 +13,8 @@ const Cocktail = require('./models/cocktailModel.js')
 const Receptacle = require('./models/receptacleModel.js');
 const Ingredient = require('./models/ingredientModel.js')
 
-// const cocktailRoutes = require('./routes/cocktailRoutes.js');
-// const receptacleRoutes = require('./routes/receptacleRoutes.js');
-// const ingredientRoutes = require('./routes/ingredientRoutes.js');
-
 Cocktail.Receptacles = Cocktail.hasOne(Receptacle);
-// Receptacle.belongsToMany(Cocktail, {through: 'Receptacle_Cocktail'});
 Cocktail.Ingredients = Cocktail.hasMany(Ingredient);
-
-
 
 sequelize
     .authenticate()
@@ -38,62 +24,11 @@ sequelize
     .catch(err => {
         console.error('Unable to connect to the database:', err);
     });
-// sequelize.sync();
-// Cocktail.create({
-//     api_id: "12345",
-//     cocktail_name: "Watermelon Thunder",
-//     instructions: "make it real good",
-//     source: "backend testing",
-//     ingredients: [
-//         {ingredient_name: "Teeth"},
-//         {ingredient_name: "unicorn horn"}
-//     ],
-//     receptacle: {
-//         receptacle_name: "A big Bucket"
-//     }
-// }, {
-//     include: [{
-//         association: Cocktail.Receptacle
-//     }, {
-//         association: Cocktail.Ingredients
-// }]
-// })
-// .then((cocktail) => {
-//     console.log(`cocktail: `, cocktail);
     
-// })
-
-// Cocktail.findAll({
-//     where: {
-//         cocktail_name: "Watermelon Thunder"
-//     }
-// }).then((cocktails) => {
-//     cocktails.forEach((each) => {
-//         console.log(`forEach: `, each.dataValues.id_cocktail);
-//         Receptacle.findAll({
-//             where: {
-//                 cocktailIdCocktail: each.dataValues.id_cocktail
-//             }
-//         }).then((receptacle) => {
-//             each.glass = receptacle;
-//             console.log(`from receptacle .then: `, each)
-//         })
-//     })
-//     // console.log(cocktail);
-// })
-
-// Receptacle.findAll()
-// .then((glass)=> {
-//     console.log(glass);
-// })
-
-// Ingredient.findAll()
-// .then((ingredients) => {
-//     console.log(ingredients);
-// })
+//used to regenerate tables or if I add a new table this will build it
+sequelize.sync();
 
 app.use(express.static('dist'));
-// app.use(express.static('src'));
 
 app.use(express.json());
 
@@ -104,8 +39,8 @@ app.get('/dbTest', (req, res) => {
     let instructions = req.query.instructions;
     let both = req.query.both;
     let source = req.query.source;
-
     let ingArr = both.split(',');
+    console.log(`ingArr: `, ingArr);
 
     function formatIngredients () {
         return ingArr.map((ingredient) => {
@@ -141,35 +76,38 @@ app.get('/dbTest', (req, res) => {
 
 app.get('/getOne', (req, res) => {
     Cocktail.findOne({
-        where: { cocktail_name: 'Moscow Mule'},
+        where: { cocktail_name: 'Negroni'},
         include: [Ingredient, Receptacle],
     }).then((cocktail) => {
-        let { id_cocktail, cocktail_name, instructions } = cocktail.dataValues;
-        let glass = cocktail.dataValues.receptacle.dataValues.receptacle_name;
-        let ingArr = cocktail.dataValues.ingredients;
-        let newIngredients = [];
-        ingArr.forEach((each) => {
-            newIngredients.push(each.dataValues.ingredient_name);
-        })
+        console.log(`cocktail: `, cocktail);
+        if (cocktail !== null) {
+            let { id_cocktail, cocktail_name, instructions } = cocktail.dataValues;
+            let glass = cocktail.dataValues.receptacle.dataValues.receptacle_name;
+            let ingArr = cocktail.dataValues.ingredients;
+            let newIngredients = [];
+            ingArr.forEach((each) => {
+                newIngredients.push(each.dataValues.ingredient_name);
+            })
 
-        formattedDrink = {
-            "id": id_cocktail,
-            "name": cocktail_name,
-            "category": "alcoholic",
-            "glass": glass,
-            "instructions": instructions,
-            "image": "",
-            "ingredients": newIngredients,
-            "both": newIngredients,
-            "source": "dB",
-            "favorite": false
-        };
+            formattedDrink = {
+                "id": id_cocktail,
+                "name": cocktail_name,
+                "category": "alcoholic",
+                "glass": glass,
+                "instructions": instructions,
+                "image": "",
+                "ingredients": newIngredients,
+                "both": newIngredients,
+                "source": "dB",
+                "favorite": false
+            };
 
-        res.send(formattedDrink);
+            res.send(formattedDrink);
+        } else {
+            res.status(200).send("no drink found");
+        }
     }).catch((err) => console.log(`create: `, err));
 });
-
-
 
 app.get('/randomCocktail', (req, res) => {
     axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/random.php`)
@@ -253,20 +191,58 @@ app.get('/randomCocktail', (req, res) => {
     })
 });
 
-app.get('/byIngredient', (req, res) => {
-    console.log(`req coming in`)
+app.get('/byIngredient', async (req, res) => {
     let searchValue = req.query.search;
+    
     axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/filter.php?i=${searchValue}`)
-        .then((result) => {
-            res.send(result.data.drinks);
+        .then( async (result) => {
+            let apiArray = [];
+
+            result.data.drinks.forEach((drink) => {
+                drink.source = "api";
+                apiArray.push(drink);
+            });
+
+            const looseIngredients = await Ingredient.findAll({
+                where: { ingredient_name: {[Op.substring]: searchValue} }
+            });
+
+            let cocktailIds = await looseIngredients.map((each) => {
+                return each.dataValues.cocktailIdCocktail;
+            });
+
+            const getDBCocktails = async () => {
+                return Promise.all(cocktailIds.map((eachId) => {
+                    return (
+                        Cocktail.findOne({
+                            where: { id_cocktail: eachId }
+                        }).then((cocktail) => {
+                            let { id_cocktail, cocktail_name } = cocktail.dataValues;
+                        
+                            formattedDrink = {
+                                "strDrink": cocktail_name,
+                                "strDrinkThumb": "noImage",
+                                "idDrink": id_cocktail,
+                                "source": "db"
+                            };
+    
+                            return formattedDrink;
+                        }).catch((err) => {
+                            console.log(`error in byIngredient catch: `, err)
+                        })
+                    );
+                }))
+            }
+
+            getDBCocktails().then((dbCocktailArray) => {
+                res.status(200).send([...dbCocktailArray, ...apiArray])
+            });
+            
         })
         .catch((error) => {
             console.error(error);
             res.send('An error occured.');
         })
-
-        //this is here for multi ingredient searches. 
-        //https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=Dry_Vermouth,Gin,Anis
 });
 
 app.get('/tenRandom', (req, res) => {
@@ -282,85 +258,121 @@ app.get('/tenRandom', (req, res) => {
 
 app.get('/byId', (req, res) => {
     let cocktailId = req.query.id;
-    axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/lookup.php?i=${cocktailId}`)
-        .then((result) => {
-            let ingredients = [
-                result.data.drinks[0].strIngredient1,
-                result.data.drinks[0].strIngredient2,
-                result.data.drinks[0].strIngredient3,
-                result.data.drinks[0].strIngredient4,
-                result.data.drinks[0].strIngredient5,
-                result.data.drinks[0].strIngredient6,
-                result.data.drinks[0].strIngredient7,
-                result.data.drinks[0].strIngredient8,
-                result.data.drinks[0].strIngredient9,
-                result.data.drinks[0].strIngredient10,
-                result.data.drinks[0].strIngredient11,
-                result.data.drinks[0].strIngredient12,
-                result.data.drinks[0].strIngredient13,
-                result.data.drinks[0].strIngredient14,
-                result.data.drinks[0].strIngredient15,
-            ];
-            let units = [
-                result.data.drinks[0].strMeasure1,
-                result.data.drinks[0].strMeasure2,
-                result.data.drinks[0].strMeasure3,
-                result.data.drinks[0].strMeasure4,
-                result.data.drinks[0].strMeasure5,
-                result.data.drinks[0].strMeasure6,
-                result.data.drinks[0].strMeasure7,
-                result.data.drinks[0].strMeasure8,
-                result.data.drinks[0].strMeasure9,
-                result.data.drinks[0].strMeasure10,
-                result.data.drinks[0].strMeasure11,
-                result.data.drinks[0].strMeasure12,
-                result.data.drinks[0].strMeasure13,
-                result.data.drinks[0].strMeasure14,
-                result.data.drinks[0].strMeasure15,
-            ];
-            let both = [
-                `${result.data.drinks[0].strMeasure1} ${result.data.drinks[0].strIngredient1}`,
-                `${result.data.drinks[0].strMeasure2} ${result.data.drinks[0].strIngredient2}`,
-                `${result.data.drinks[0].strMeasure3} ${result.data.drinks[0].strIngredient3}`,
-                `${result.data.drinks[0].strMeasure4} ${result.data.drinks[0].strIngredient4}`,
-                `${result.data.drinks[0].strMeasure5} ${result.data.drinks[0].strIngredient5}`,
-                `${result.data.drinks[0].strMeasure6} ${result.data.drinks[0].strIngredient6}`,
-                `${result.data.drinks[0].strMeasure7} ${result.data.drinks[0].strIngredient7}`,
-                `${result.data.drinks[0].strMeasure8} ${result.data.drinks[0].strIngredient8}`,
-                `${result.data.drinks[0].strMeasure9} ${result.data.drinks[0].strIngredient9}`,
-                `${result.data.drinks[0].strMeasure10} ${result.data.drinks[0].strIngredient10}`,
-                `${result.data.drinks[0].strMeasure11} ${result.data.drinks[0].strIngredient11}`,
-                `${result.data.drinks[0].strMeasure12} ${result.data.drinks[0].strIngredient12}`,
-                `${result.data.drinks[0].strMeasure13} ${result.data.drinks[0].strIngredient13}`,
-                `${result.data.drinks[0].strMeasure14} ${result.data.drinks[0].strIngredient14}`,
-                `${result.data.drinks[0].strMeasure15} ${result.data.drinks[0].strIngredient15}`,
-            ]
-            formattedDrink = {
-                "id": result.data.drinks[0].idDrink,
-                "name": result.data.drinks[0].strDrink,
-                "category": result.data.drinks[0].strCategory,
-                "glass": result.data.drinks[0].strGlass,
-                "instructions": result.data.drinks[0].strInstructions,
-                "deutschInstructions": result.data.drinks[0].strInstructionsDE,
-                "image": result.data.drinks[0].strDrinkThumb,
-                "ingredients": ingredients.filter((each) => {
-                    return each != null;
-                }),
-                "units": units.filter((each) => {
-                    return each != null;
-                }),
-                "both": both.filter((each) => {
-                    return each != `${null} ${null}`;
-                }),
-                "source": "api",
-                "favorite": false
+    let source = req.query.source;
+    
+    if (source === "db") {
+        Cocktail.findOne({
+            where: { id_cocktail: cocktailId},
+            include: [Ingredient, Receptacle],
+        }).then((cocktail) => {
+            if (cocktail !== null) {
+                let { id_cocktail, cocktail_name, instructions } = cocktail.dataValues;
+                let glass = cocktail.dataValues.receptacle.dataValues.receptacle_name;
+                let ingArr = cocktail.dataValues.ingredients;
+                let newIngredients = [];
+                ingArr.forEach((each) => {
+                    newIngredients.push(each.dataValues.ingredient_name);
+                })
+    
+                formattedDrink = {
+                    "id": id_cocktail,
+                    "name": cocktail_name,
+                    "category": "alcoholic",
+                    "glass": glass,
+                    "instructions": instructions,
+                    "image": "noImage",
+                    "ingredients": newIngredients,
+                    "both": newIngredients,
+                    "source": "dB",
+                    "favorite": false
+                };
+
+                res.send(formattedDrink);
+            } else {
+                res.status(200).send("no drink found");
             }
-            res.send(formattedDrink);
-            })
-        .catch((error) => {
-            console.error(error);
-            res.send('An error occured.');
-    })
+        }).catch((err) => console.log(`create: `, err));
+    } else if (source === "api") {
+        axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/lookup.php?i=${cocktailId}`)
+            .then((result) => {
+                let ingredients = [
+                    result.data.drinks[0].strIngredient1,
+                    result.data.drinks[0].strIngredient2,
+                    result.data.drinks[0].strIngredient3,
+                    result.data.drinks[0].strIngredient4,
+                    result.data.drinks[0].strIngredient5,
+                    result.data.drinks[0].strIngredient6,
+                    result.data.drinks[0].strIngredient7,
+                    result.data.drinks[0].strIngredient8,
+                    result.data.drinks[0].strIngredient9,
+                    result.data.drinks[0].strIngredient10,
+                    result.data.drinks[0].strIngredient11,
+                    result.data.drinks[0].strIngredient12,
+                    result.data.drinks[0].strIngredient13,
+                    result.data.drinks[0].strIngredient14,
+                    result.data.drinks[0].strIngredient15,
+                ];
+                let units = [
+                    result.data.drinks[0].strMeasure1,
+                    result.data.drinks[0].strMeasure2,
+                    result.data.drinks[0].strMeasure3,
+                    result.data.drinks[0].strMeasure4,
+                    result.data.drinks[0].strMeasure5,
+                    result.data.drinks[0].strMeasure6,
+                    result.data.drinks[0].strMeasure7,
+                    result.data.drinks[0].strMeasure8,
+                    result.data.drinks[0].strMeasure9,
+                    result.data.drinks[0].strMeasure10,
+                    result.data.drinks[0].strMeasure11,
+                    result.data.drinks[0].strMeasure12,
+                    result.data.drinks[0].strMeasure13,
+                    result.data.drinks[0].strMeasure14,
+                    result.data.drinks[0].strMeasure15,
+                ];
+                let both = [
+                    `${result.data.drinks[0].strMeasure1} ${result.data.drinks[0].strIngredient1}`,
+                    `${result.data.drinks[0].strMeasure2} ${result.data.drinks[0].strIngredient2}`,
+                    `${result.data.drinks[0].strMeasure3} ${result.data.drinks[0].strIngredient3}`,
+                    `${result.data.drinks[0].strMeasure4} ${result.data.drinks[0].strIngredient4}`,
+                    `${result.data.drinks[0].strMeasure5} ${result.data.drinks[0].strIngredient5}`,
+                    `${result.data.drinks[0].strMeasure6} ${result.data.drinks[0].strIngredient6}`,
+                    `${result.data.drinks[0].strMeasure7} ${result.data.drinks[0].strIngredient7}`,
+                    `${result.data.drinks[0].strMeasure8} ${result.data.drinks[0].strIngredient8}`,
+                    `${result.data.drinks[0].strMeasure9} ${result.data.drinks[0].strIngredient9}`,
+                    `${result.data.drinks[0].strMeasure10} ${result.data.drinks[0].strIngredient10}`,
+                    `${result.data.drinks[0].strMeasure11} ${result.data.drinks[0].strIngredient11}`,
+                    `${result.data.drinks[0].strMeasure12} ${result.data.drinks[0].strIngredient12}`,
+                    `${result.data.drinks[0].strMeasure13} ${result.data.drinks[0].strIngredient13}`,
+                    `${result.data.drinks[0].strMeasure14} ${result.data.drinks[0].strIngredient14}`,
+                    `${result.data.drinks[0].strMeasure15} ${result.data.drinks[0].strIngredient15}`,
+                ]
+                formattedDrink = {
+                    "id": result.data.drinks[0].idDrink,
+                    "name": result.data.drinks[0].strDrink,
+                    "category": result.data.drinks[0].strCategory,
+                    "glass": result.data.drinks[0].strGlass,
+                    "instructions": result.data.drinks[0].strInstructions,
+                    "deutschInstructions": result.data.drinks[0].strInstructionsDE,
+                    "image": result.data.drinks[0].strDrinkThumb,
+                    "ingredients": ingredients.filter((each) => {
+                        return each != null;
+                    }),
+                    "units": units.filter((each) => {
+                        return each != null;
+                    }),
+                    "both": both.filter((each) => {
+                        return each != `${null} ${null}`;
+                    }),
+                    "source": "api",
+                    "favorite": false
+                }
+                res.send(formattedDrink);
+                })
+            .catch((error) => {
+                console.error(error);
+                res.send('An error occured.');
+        })
+    }
 });
 
 app.post('/createNew', (req, res) => {
@@ -391,7 +403,6 @@ app.post('/createNew', (req, res) => {
     })
     .then((cocktail) => {
         console.log(`new Created: `, cocktail);
-        
     })
 });
 
