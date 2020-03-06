@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
+// Op is for super target searches, accepts regex-esque queries
 const { Op } = require("sequelize");
 
 dotenv.config();
@@ -9,9 +10,10 @@ const app = express();
 
 const sequelize = require('./util/database.js');
 
-const Cocktail = require('./models/cocktailModel.js')
+const Cocktail = require('./models/cocktailModel.js');
 const Receptacle = require('./models/receptacleModel.js');
-const Ingredient = require('./models/ingredientModel.js')
+const Ingredient = require('./models/ingredientModel.js');
+const User = require('./models/userModel.js')
 
 Cocktail.Receptacles = Cocktail.hasOne(Receptacle);
 Cocktail.Ingredients = Cocktail.hasMany(Ingredient);
@@ -40,7 +42,7 @@ app.get('/dbTest', (req, res) => {
     let both = req.query.both;
     let source = req.query.source;
     let ingArr = both.split(',');
-    console.log(`ingArr: `, ingArr);
+    let imageUrl = req.query.imageUrl;
 
     function formatIngredients () {
         return ingArr.map((ingredient) => {
@@ -55,6 +57,7 @@ app.get('/dbTest', (req, res) => {
         cocktail_name: name,
         instructions: instructions,
         source: source,
+        image_url: imageUrl,
         ingredients: formatIngredients(),
         receptacle: {
             receptacle_name: glass
@@ -68,15 +71,14 @@ app.get('/dbTest', (req, res) => {
     })
     .then((cocktail) => {
         console.log(`cocktail after insert: `, cocktail);
+        res.status(200).send(cocktail);
     })
     .catch((err) => console.log(`create: `, err));
-
-    console.log(`incomming data: `, id, name, glass, instructions, both, source);
 })
 
 app.get('/getOne', (req, res) => {
     Cocktail.findOne({
-        where: { cocktail_name: 'Negroni'},
+        where: { cocktail_name: 'Big Red'},
         include: [Ingredient, Receptacle],
     }).then((cocktail) => {
         console.log(`cocktail: `, cocktail);
@@ -217,11 +219,11 @@ app.get('/byIngredient', async (req, res) => {
                         Cocktail.findOne({
                             where: { id_cocktail: eachId }
                         }).then((cocktail) => {
-                            let { id_cocktail, cocktail_name } = cocktail.dataValues;
+                            let { id_cocktail, cocktail_name, image_url } = cocktail.dataValues;
                         
                             formattedDrink = {
                                 "strDrink": cocktail_name,
-                                "strDrinkThumb": "noImage",
+                                "strDrinkThumb": image_url,
                                 "idDrink": id_cocktail,
                                 "source": "db"
                             };
@@ -269,6 +271,7 @@ app.get('/byId', (req, res) => {
                 let { id_cocktail, cocktail_name, instructions } = cocktail.dataValues;
                 let glass = cocktail.dataValues.receptacle.dataValues.receptacle_name;
                 let ingArr = cocktail.dataValues.ingredients;
+                let image = cocktail.dataValues.image_url;
                 let newIngredients = [];
                 ingArr.forEach((each) => {
                     newIngredients.push(each.dataValues.ingredient_name);
@@ -280,7 +283,7 @@ app.get('/byId', (req, res) => {
                     "category": "alcoholic",
                     "glass": glass,
                     "instructions": instructions,
-                    "image": "noImage",
+                    "image": image,
                     "ingredients": newIngredients,
                     "both": newIngredients,
                     "source": "dB",
@@ -292,7 +295,7 @@ app.get('/byId', (req, res) => {
                 res.status(200).send("no drink found");
             }
         }).catch((err) => console.log(`create: `, err));
-    } else if (source === "api") {
+    } else {
         axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/lookup.php?i=${cocktailId}`)
             .then((result) => {
                 let ingredients = [
@@ -377,7 +380,7 @@ app.get('/byId', (req, res) => {
 
 app.post('/createNew', (req, res) => {
     let cocktailObject = req.body;
-
+    console.log(`cocktail Object: `, cocktailObject);
     function formatIngredients () {
         return cocktailObject.both.map((ingredient) => {
             return ( 
@@ -385,26 +388,45 @@ app.post('/createNew', (req, res) => {
             )
         })
     }
-    
+
     Cocktail.create({
-        api_id: cocktailObject.id,
         cocktail_name: cocktailObject.name,
         instructions: cocktailObject.instructions,
         source: cocktailObject.source,
         ingredients: formatIngredients(),
-        receptacles: {
+        image_url: cocktailObject.image,
+        receptacle: {
             receptacle_name: cocktailObject.glass
         }
     }, {
         include: [{
-            association: Cocktail.Receptacle,
+            association: Cocktail.Receptacles
+        }, {
             association: Cocktail.Ingredients
         }]
     })
     .then((cocktail) => {
-        console.log(`new Created: `, cocktail);
+        console.log(`cocktail after insert: `, cocktail);
+        res.status(200).send(cocktail);
     })
+    .catch((err) => console.log(`create error: `, err));
 });
+
+app.post('/register', (req, res) => {
+    let userObject = req.body;
+    let {userName, password} = userObject;
+    console.log(`user object: `, userName, password);
+
+    User.create({
+        user_name: userName,
+        password: password
+    })
+    .then((user) => {
+        console.log(`user after Insert: `, user);
+        res.status(200).send(user);
+    })
+    .catch((err) => console.log(`user error: `, err))
+})
 
 
 module.exports = app;

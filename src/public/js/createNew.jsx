@@ -5,8 +5,8 @@ import { useInput } from '../../hooks/useInput.jsx';
 function Create (props) {
     const { value:name, bind:bindname, reset:resetname } = useInput('');
     const { value:glass, bind:bindglass, reset:resetglass } = useInput('');
-    const { value:category, bind:bindcategory, reset:resetcategory } = useInput('');
     const { value:instructions, bind:bindinstructions, reset:resetinstructions } = useInput('');
+    const { value:imageUrl, bind:bindImageUrl, reset:resetImageUrl } = useInput('');
     const { value:ingredient1, bind:bindingredient1, reset:resetingredient1 } = useInput('');
     const { value:ingredient2, bind:bindingredient2, reset:resetingredient2 } = useInput('');
     const { value:ingredient3, bind:bindingredient3, reset:resetingredient3 } = useInput('');
@@ -95,9 +95,9 @@ function Create (props) {
         let newCocktail = {
             "id": id,
             "name": name,
-            "category": category,
             "glass": glass,
             "instructions": instructions,
+            "imageUrl": imageUrl,
             "ingredients": ingredients.filter((each) => {
                 return each != ''
             }),
@@ -107,8 +107,7 @@ function Create (props) {
             "both": both.filter((each) => {
                 return each != ' '
             }),
-            "source": "local",
-            "favorite": "false"
+            "source": "db"
         }
         id++
 
@@ -118,6 +117,7 @@ function Create (props) {
         resetglass();
         resetcategory();
         resetinstructions();
+        resetImageUrl();
         resetingredient1();
         resetingredient2();
         resetingredient3();
@@ -157,7 +157,7 @@ function Create (props) {
                     <h4 className="create-title">Input your own cocktail!</h4>
                 </div>
                 <div className="inputs-hor-flex">
-                    <form className="inputs-vert-flex" onSubmit={handleSubmit}>
+                    <form className="inputs-vert-flex" onSubmit={ handleSubmit }>
                         <div className="label-input-group">
                             <label>
                                 Name:
@@ -167,19 +167,30 @@ function Create (props) {
                         <div className="label-input-group">
                             <label>
                                 Glass:
-                                <input type="text" className="cocktail-input" {...bindglass} />
-                            </label>
-                        </div>
-                        <div className="label-input-group">
-                            <label>
-                                Category:
-                                <input type="text" className="cocktail-input" {...bindcategory} />
+                                <select type="text" className="cocktail-input" {...bindglass} >
+                                    <option value={"highball glass"}>Highball Glass</option>
+                                    <option value={"cocktail glass"}>Cocktail Glass</option>
+                                    <option value={"martini glass"}>Martini Glass</option>
+                                    <option value={"beer glass"}>Beer Glass</option>
+                                    <option value={"shot glass"}>Shot Glass</option>
+                                    <option value={"collins glass"}>Collins Glass</option>
+                                    <option value={"coupe glass"}>Coupe Glass</option>
+                                    <option value={"punch bowl"}>Punch Bowl</option>
+                                    <option value={"bucket"}>Bucket</option>
+                                    <option value={"champagne flute"}>Champagne Flute</option>
+                                </select>
                             </label>
                         </div>
                         <div className="label-input-group">
                             <label>
                                 Instructions:
                                 <input type="text" className="cocktail-input" {...bindinstructions} />
+                            </label>
+                        </div>
+                        <div className="label-input-group">
+                            <label>
+                                Image Url:
+                                <input type="text" className="cocktail-input" {...bindImageUrl} />
                             </label>
                         </div>
                         <div className="ingredient-input-group">

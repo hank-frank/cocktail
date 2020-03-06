@@ -7,6 +7,7 @@ function Cocktail (props) {
 
     useEffect(() => {
         setToggleState(false);
+        console.log(`props: `, props.cocktail);
     },[props])
 
     const checkToggle = () => {
@@ -30,7 +31,7 @@ function Cocktail (props) {
 
     const sendItOnBack = () => {
         let {id, name, category, glass, instructions, deutschInstructions, image, ingredients, units, both, source } = props.cocktail;
-        fetch(`/dbTest?id=${id}&name=${name}&glass=${glass}&instructions=${instructions}&both=${both}&source=${source}&category=${category}`)
+        fetch(`/dbTest?id=${id}&name=${name}&glass=${glass}&instructions=${instructions}&both=${both}&source=${source}&category=${category}&imageUrl=${image}`)
             .then((response) => {
                 return response = response.json()
             })

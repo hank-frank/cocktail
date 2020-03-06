@@ -9,6 +9,7 @@ import Favorites from './favorites.jsx';
 import Cocktail from './oneCocktail.jsx';
 import Create from './createNew.jsx';
 import Welcome from './welcome.jsx'
+import Register from './register.jsx';
 
 function App() {
     const [randomCocktail, setRandomCocktail] = useState({});
@@ -65,7 +66,8 @@ function App() {
             .then((cocktailArray) => {
                 setSearchResult(cocktailArray)
             })
-            .catch(err => console.error(`whoopsies random ten: `, err))
+            .catch(err => console.error(`whoopsies random ten: `, err));
+            console.log(`get Ten results: `, searchResult);
     };
 
     const searchByIngredient = (searchValue) => {
@@ -79,7 +81,8 @@ function App() {
         .catch((err) => {
             console.error(`whoopsies ingredient`, err);
             setNoIngredient(`Whoopsies... No cocktails with ${searchValue}, try again.`)
-        })
+        });
+        console.log(`ingredient search results, `, searchResult);
     }
 
     const getById = (cocktailId, source) => {
@@ -88,6 +91,7 @@ function App() {
             return response = response.json()
         })
         .then ((cocktail) => {
+            console.log(`cocktail by id: `, cocktail);
             setById(cocktail);
             setCurrent(cocktail);
             let tempHistory = historyArray;
@@ -132,8 +136,24 @@ function App() {
 
     const getOne = (cocktail) => {
         setCurrent(cocktail);
-        console.log(`from App cocktail: `, cocktail);
-        console.log(`from App current: `, current);
+    }
+
+    const registerUser = async (userName, password) => {
+        let userObject = {
+            userName: userName,
+            password: password
+        }
+
+        const rawResponse = await fetch('register', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userObject)
+        });
+        const addedUser = await rawResponse.json();
+        console.log(`username response: `, addedUser);
     }
 
     return(
@@ -158,6 +178,11 @@ function App() {
                         <SearchResults
                             drinksArray = { searchResult }
                             getById = { getById }
+                        />
+                    </Route>
+                    <Route path="/register">
+                        <Register
+                            registerUser = { registerUser }
                         />
                     </Route>
                     <Route path='/oneCocktail'>

@@ -14,7 +14,7 @@ function Favorites (props) {
         return(
             props.favoritesArray.map((cocktail, key) => {
                     return  (
-                        <Link to='/oneCocktail' key={ cocktail.id }>
+                        <Link to='/oneCocktail' key={ cocktail.id } replace>
                             <p className="history-cocktail-title" onClick={() => props.recallHistory(cocktail.id)}>{ cocktail.name }</p>
                         </Link>
                     )

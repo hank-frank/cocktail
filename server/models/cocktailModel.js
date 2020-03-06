@@ -24,6 +24,11 @@ const Cocktail = sequelize.define('cocktail', {
         allowNull: false,
         foreignKey: false
     },
+    image_url: {
+        type: Sequelize.STRING(800),
+        allowNull: true,
+        foreignKey: false
+    },
     source: {
         type: Sequelize.STRING,
         allowNull: false,
