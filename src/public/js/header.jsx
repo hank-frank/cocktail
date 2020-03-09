@@ -24,6 +24,12 @@ function Header () {
                     <div className="header-item">
                         <Link to='/register' className="link-text" replace>Register</Link>
                     </div>
+                    <div className="header-item">
+                        <Link to='/login' className="link-text" replace>Login</Link>
+                    </div>
+                    <div className="header-item">
+                        <Link to='/main' className="link-text" replace>Main</Link>
+                    </div>
                 </div>
             </div>
         </>

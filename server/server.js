@@ -1,12 +1,21 @@
 const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const withAuth = require('./withAuth.js');
 // Op is for super target searches, accepts regex-esque queries
 const { Op } = require("sequelize");
 
-dotenv.config();
-
 const app = express();
+
+dotenv.config();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+const secret = process.env.JWT_SECRET;
 
 const sequelize = require('./util/database.js');
 
@@ -378,7 +387,7 @@ app.get('/byId', (req, res) => {
     }
 });
 
-app.post('/createNew', (req, res) => {
+app.post('/createNew', withAuth, (req, res) => {
     let cocktailObject = req.body;
     console.log(`cocktail Object: `, cocktailObject);
     function formatIngredients () {
@@ -412,20 +421,66 @@ app.post('/createNew', (req, res) => {
     .catch((err) => console.log(`create error: `, err));
 });
 
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
     let userObject = req.body;
     let {userName, password} = userObject;
-    console.log(`user object: `, userName, password);
+    let alreadyExists;
 
-    User.create({
-        user_name: userName,
-        password: password
-    })
-    .then((user) => {
-        console.log(`user after Insert: `, user);
-        res.status(200).send(user);
-    })
-    .catch((err) => console.log(`user error: `, err))
+    try {
+        alreadyExists = await User.findOne({
+            where: {
+                user_name: userName
+            }
+        });
+    } catch {
+        console.log(`check if user exists failed`);
+    }
+
+    if (alreadyExists !== null) {
+        if (alreadyExists.dataValues.user_name == userName) {
+            res.status(200).send("already-exists");
+        }
+    } else {
+        const newUser = await User.create({
+            user_name: userName,
+            password: password
+        });
+        res.status(200).send({user: newUser.dataValues.user_name})
+    };
+});
+
+app.post('/userLogin', async (req, res) => {
+    let userObject = req.body;
+    let {userName, password} = userObject;
+    let user;
+
+    try {
+        user = await User.findOne({
+            where: {
+                user_name: userName
+            }
+        });
+    } catch {
+        console.log(`find user failed`);
+    }
+    
+    if (!user || user == null) {
+        console.log(`no user`)
+        res.status(200).send({message: `no user`})
+    } else {
+        if (user.dataValues.password == password) {
+            const payload = { userName };
+            const token = jwt.sign(payload, secret, { expiresIn: '1h'});
+            res.cookie('token', token, { httpOnly: false }).status(200).send({user: user.dataValues.user_name});
+        } else {
+            res.status(200).send({message: `incorrect password`})
+        }
+    }
+    console.log(`user: `, user);
+});
+
+app.get('/checkToken', withAuth, (req, res) => {
+    res.status(200).send("it Worked")
 })
 
 
