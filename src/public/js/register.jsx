@@ -16,7 +16,7 @@ function Register (props) {
         console.log(`password: `, password);
         console.log(`pass2: `, password2);
 
-        props.registerUser(username, password);
+        props.registerUser(username, password, password2);
         resetUsername();
         resetPassword();
         resetPassword2();
@@ -67,6 +67,9 @@ function Register (props) {
                         <input className="submit-button" type="submit" value="Register" />
                 </form>
                     {/* { routingForSearch() } */}
+            </div>
+            <div className="horizontal-center">
+                <p className="login-message">{ props.registerMessage }</p>
             </div>
         </>
     )

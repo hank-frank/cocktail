@@ -433,12 +433,12 @@ app.post('/register', async (req, res) => {
             }
         });
     } catch {
-        console.log(`check if user exists failed`);
+        console.log({message: `failed`});
     }
 
     if (alreadyExists !== null) {
         if (alreadyExists.dataValues.user_name == userName) {
-            res.status(200).send("already-exists");
+            res.status(200).send({message: `already-exists`});
         }
     } else {
         const newUser = await User.create({

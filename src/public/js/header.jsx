@@ -12,6 +12,9 @@ function Header () {
         <>
             <div className="header-container">
                 <div className="header-content">
+                <div className="header-item">
+                        <Link to='/search' className="link-text" replace>Search</Link>
+                    </div>
                     <div className="header-item">
                         <Link to='/ById' className="link-text" replace>OneCocktail</Link>
                     </div>
@@ -19,7 +22,7 @@ function Header () {
                         <Link to='/addCocktail' className="link-text" replace>Create</Link>
                     </div>
                     <div className="header-item">
-                        <Link to='/searchContents' className="link-text" replace>Search</Link>
+                        <Link to='/searchContents' className="link-text" replace>Search Results</Link>
                     </div>
                     <div className="header-item">
                         <Link to='/register' className="link-text" replace>Register</Link>

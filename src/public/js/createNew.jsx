@@ -115,7 +115,6 @@ function Create (props) {
 
         resetname();
         resetglass();
-        resetcategory();
         resetinstructions();
         resetImageUrl();
         resetingredient1();
