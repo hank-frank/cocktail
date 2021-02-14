@@ -39,7 +39,7 @@ function Register (props) {
     return (
         <>
             <div className="search-section">
-                <form onSubmit={ handleSubmit }>
+                <form className="register-form" onSubmit={ handleSubmit }>
                     <label className="search-label">
                         Pick a username:
                         <input

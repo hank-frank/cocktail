@@ -5,7 +5,7 @@ dotenv.config();
 const secret = process.env.JWT_SECRET;
 
 const withAuth = (req, res, next) => {
-    console.log(`raw req: `, req.cookies);
+    // console.log(`raw req: `, req.cookies);
     let token = req.cookies.token;
 
     if (!token) {

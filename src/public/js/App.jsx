@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import Header from './header.jsx';
 import SearchBar from './searchBar.jsx';
@@ -11,18 +12,20 @@ import Create from './createNew.jsx';
 import Welcome from './welcome.jsx'
 import Register from './register.jsx';
 import Login from './login.jsx';
+import withAuth from './routeProtect.jsx'; 
 
 function App() {
-    // const [byId, setById] = useState({});
     const [searchResult, setSearchResult] = useState([]);
     const [current, setCurrent] = useState({});
     const [historyArray, setHistoryArray] = useState([]);
-    // const [newArray, setNewArray] = useState([]);
     const [allViewed, setAllViewed] = useState([]);
     const [favoritesArray, setFavoritesArray] = useState([]);
     const [noIngredient, setNoIngredient] = useState('');
     const [loginMessage, setLoginMessage] = useState('');
     const [registerMessage, setRegisterMessage] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [showSideContainer, setShowSideContainer] = useState(false)
+    const [shouldRedirectAfterLogin, setShouldRedirectAfterLogin] = useState(false);
 
     useEffect(() => {
         let eachViewed = current;
@@ -44,6 +47,23 @@ function App() {
         setFavoritesArray(localFavorites);
     }, [allViewed])
 
+    useEffect(() => {    
+        const isValid = checkUseToken();
+    })
+
+    const checkUseToken = async () => {
+        const rawUserWithToken = await fetch('./checkToken');
+        if (rawUserWithToken.status === 200) {
+            setIsLoggedIn(true);
+        }  else {
+            setIsLoggedIn(false);
+        }
+        
+    }
+
+    const resetSideContainerView = () => {
+        setShowSideContainer(false);
+    }
 
     const getRandomCocktail = () => {
         fetch(`/randomCocktail`)
@@ -52,6 +72,7 @@ function App() {
             })
             .then((cocktail) => {
                 setCurrent(cocktail);
+                console.log('cocktail: ', cocktail);
                 let tempHistory = historyArray;
                 tempHistory.push(cocktail);
                 setHistoryArray(tempHistory);
@@ -125,6 +146,7 @@ function App() {
     }
 
     const makeFavorite = (cocktail) => {
+        console.log(`make fav App`)
         let eachViewed = current;
         let localFavorites = favoritesArray;
         localFavorites.push(eachViewed);
@@ -178,42 +200,63 @@ function App() {
             },
             body: JSON.stringify(userObject)
         });
-        const loggedInUser = await rawResponse.json();
+        let loggedInUser = await rawResponse.json();
         console.log(`username response: `, loggedInUser);
 
         if (loggedInUser.user == userName) {
-            //
-            
-        } else if(loggedInUser.message == "no user") {
-
+            console.log('usernamematches')
+            setIsLoggedIn(true);     
+            setShouldRedirectAfterLogin(true);  
+            setShowSideContainer(true);
+        } else if (loggedInUser.message == "no user") {
+            setLoginMessage('username or password not correct');
         } else {
             setLoginMessage('username or password not correct');
         }
     };
 
+    const resetShouldRedirect = () => {
+        console.log(`should redirect after login 1: `, shouldRedirectAfterLogin);
+        shouldRedirectAfterLogin ? setShouldRedirectAfterLogin(false) : null;
+        console.log(`should redirect after login 2: `, shouldRedirectAfterLogin);
+
+    }
+
+    const logout = async () => {
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        setIsLoggedIn(false);
+        setShowSideContainer(false);
+    }
+
+    const logoutRedirect = () => {
+        if (!isLoggedIn) {
+            return <Redirect to='/login' />
+        }
+    }
+
+    const testFunct = () => {
+        // console.log(`reseting cookies`)
+        // document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        console.log(`loggedIn: `, isLoggedIn);
+    }
+
+    const adjustWidth = () => {
+        return isLoggedIn ? "" : 'left-area-full';
+    }
+
     return(
         <Router>
-            <Header />
-
-            <div className="main-container">
-                <div className="left-area-container">
+            <Header 
+                isLoggedIn = { isLoggedIn }
+                logout = { logout }
+                testFunct = {testFunct}
+                />
+        {/* <button className="test-button" onClick={ testFunct }>Reset COokie</button> */}
+        { logoutRedirect() }
+            <div className={`main-container ${adjustWidth()}`}>
+                <div className={`left-area-container ${adjustWidth()}`}>
                     <Route exact path="/">
                         <Welcome />
-                    </Route>
-                    <Route path="/search">
-                    <SearchBar 
-                        search = { searchByIngredient }
-                        getRandom = { getRandomCocktail }
-                        getTen = { getTen }
-                        noIngredient = { noIngredient }
-                        resetNoIngredient = { resetNoIngredient }
-                    />
-                    </Route>
-                    <Route path="/searchContents">
-                        <SearchResults
-                            drinksArray = { searchResult }
-                            getById = { getById }
-                        />
                     </Route>
                     <Route path="/register">
                         <Register
@@ -225,32 +268,48 @@ function App() {
                         <Login
                             login = { login }
                             loginMessage = { loginMessage }
+                            shouldRedirectAfterLogin = { shouldRedirectAfterLogin }
+                            resetShouldRedirect = { resetShouldRedirect }
+                            resetSideContainerView = { resetSideContainerView }
                         />
                     </Route>
-                    <Route path='/oneCocktail'>
-                        <Cocktail
-                            drinksArray = { searchResult }
-                            cocktail = { current }
-                            makeFavorite = { makeFavorite }
-                            getOne={ getOne }
-                        />
+                    <Route path="/search" component={ withAuth(SearchBar, {
+                        search: searchByIngredient,
+                        getRandom: getRandomCocktail,
+                        getTen: getTen,
+                        noIngredient: noIngredient,
+                        resetNoIngredient: resetNoIngredient
+                    })}>
                     </Route>
-                    <Route path='/addCocktail'>
-                        <Create 
-                            addCocktail = { addCocktail }
-                        />
+                    <Route path="/searchContents" component={ withAuth(SearchResults, {
+                        drinksArray: searchResult,
+                        getById: getById
+                    })}>
                     </Route>
+                    <Route path='/oneCocktail' component={ withAuth(Cocktail, {
+                        drinksArray: searchResult,
+                        cocktail: current,
+                        makeFavorite: makeFavorite,
+                        getOne: getOne
+                    })}></Route>
+                    <Route path='/addCocktail' component={ withAuth(Create, {
+                        addCocktail: addCocktail
+                    })}></Route>
                 </div>
-                <div className="side-container">
-                    <History 
-                        historyArray = { historyArray }
-                        recallHistory = { recallHistory }   
-                    />
-                    <Favorites 
-                        favoritesArray = { favoritesArray }
-                        recallHistory = { recallHistory }
-                    />
-                </div>
+                {
+                    showSideContainer ?
+                    <div className="side-container" >
+                        <History 
+                            historyArray = { historyArray }
+                            recallHistory = { recallHistory }   
+                        />
+                        <Favorites 
+                            favoritesArray = { favoritesArray }
+                            recallHistory = { recallHistory }
+                        />
+                    </div>
+                    : null
+                }
             </div>
         </Router>
     )

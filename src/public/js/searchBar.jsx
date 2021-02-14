@@ -12,11 +12,11 @@ function SearchBar (props) {
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        props.search(value);
+        props.props.search(value);
         reset();
         setShouldRedirect(true);
         routingForSearch();
-        props.resetNoIngredient();
+        props.props.resetNoIngredient();
     }
 
     const routingForSearch = () => {
@@ -29,11 +29,12 @@ function SearchBar (props) {
 
     useEffect(() => {
         setShouldRedirect(false);
+        console.log(`props: `, props)
     }, [shouldRedirect])
 
     return (
-        <>
-            <div className="search-section">
+        <div className="search-section">
+            <div className="search-sub-section">
                 <form onSubmit={ handleSubmit }>
                     <label className="search-label">
                         Search by Ingredient:
@@ -49,16 +50,17 @@ function SearchBar (props) {
             </div>
             <div className="random-flex">
                 <Link to='/oneCocktail' replace>
-                    <button className="random-button" onClick={ ()=> props.getRandom() }>I don't care, give me one of anything...</button>
+                    <button className="random-button" onClick={ ()=> props.props.getRandom() }>I don't care, give me one of anything...</button>
                 </Link>
                 <Link to='./searchContents' replace>
-                    <button className="random-button" onClick={ () => props.getTen() }>Show me any 10... </button>
+                    <button className="random-button" onClick={ () => props.props.getTen() }>Show me any 10... </button>
                 </Link>
             </div>
             <div className="no-ingredient-flex">
-                <h4 className="no-ingredient"> { props.noIngredient }</h4>
+                <h4 className="no-ingredient"> { props.props.noIngredient }</h4>
             </div>
-        </>
+            
+        </div>
     )
 };
 

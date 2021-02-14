@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const withAuth = require('./withAuth.js');
+var crypto = require('crypto');
 // Op is for super target searches, accepts regex-esque queries
 const { Op } = require("sequelize");
 
@@ -42,6 +43,31 @@ sequelize.sync();
 app.use(express.static('dist'));
 
 app.use(express.json());
+
+const genRandomString = function(length){
+    return crypto.randomBytes(Math.ceil(length/2))
+            .toString('hex') /** convert to hexadecimal format */
+            .slice(0,length);   /** return required number of characters */
+};
+
+const sha512 = function(password, salt){
+    const hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    hash.update(password);
+    const value = hash.digest('hex');
+    return {
+        salt:salt,
+        passwordHash:value
+    };
+};
+
+function saltHashPassword(userpassword) {
+    const salt = genRandomString(16); /** Gives us salt of length 16 */
+    const passwordData = sha512(userpassword, salt);
+    // console.log('UserPassword = '+userpassword);
+    // console.log('Passwordhash = '+passwordData.passwordHash);
+    // console.log('nSalt = '+passwordData.salt);
+    return passwordData;
+}
 
 app.get('/dbTest', (req, res) => {
     let id = req.query.id;
@@ -123,6 +149,7 @@ app.get('/getOne', (req, res) => {
 app.get('/randomCocktail', (req, res) => {
     axios.get(`https://www.thecocktaildb.com/api/json/v2/${process.env.COCKTAIL_DB_API_KEY}/random.php`)
         .then((result) => {
+            console.log('reault: ', result);
             let ingredients = [
                 result.data.drinks[0].strIngredient1,
                 result.data.drinks[0].strIngredient2,
@@ -273,7 +300,7 @@ app.get('/byId', (req, res) => {
     
     if (source === "db") {
         Cocktail.findOne({
-            where: { id_cocktail: cocktailId},
+            where: { id_cocktail: cocktailId },
             include: [Ingredient, Receptacle],
         }).then((cocktail) => {
             if (cocktail !== null) {
@@ -480,7 +507,7 @@ app.post('/userLogin', async (req, res) => {
 });
 
 app.get('/checkToken', withAuth, (req, res) => {
-    res.status(200).send("it Worked")
+    res.status(200).send({valid: true})
 })
 
 

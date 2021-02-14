@@ -7,7 +7,7 @@ import { useInput } from '../../hooks/useInput.jsx';
 function Login (props) {
     const { value:username, bind:bindUsername, reset:resetUsername } = useInput('');
     const { value:password, bind:bindPassword, reset:resetPassword } = useInput('');
-    const [shouldRedirect, setShouldRedirect] = useState(false);
+    // const [shouldRedirect, setShouldRedirect] = useState(false);
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
@@ -22,23 +22,24 @@ function Login (props) {
     }
 
     const routingForSearch = () => {
-        if (shouldRedirect === true) {
+        if (props.shouldRedirectAfterLogin) {
             return(
-                <Redirect to='/searchContents' />
+                <Redirect to='/search' />
             )
         };
     };
 
     useEffect(() => {
-        setShouldRedirect(false);
-    }, [shouldRedirect])
+        props.resetShouldRedirect();
+        props.resetSideContainerView();
+    }, [props.shouldRedirectAfterLogin])
 
     return (
         <>
-            <div className="search-section">
-                <form onSubmit={ handleSubmit }>
+            <div className="login-section">
+                <form className="login-container" onSubmit={ handleSubmit }>
                     <label className="search-label">
-                        Pick a username:
+                        Username:
                         <input
                         className="search-bar"
                         type="text"
@@ -46,16 +47,16 @@ function Login (props) {
                         />
                     </label>
                     <label className="search-label">
-                        Pick a password:
+                        Password:
                         <input
                         className="search-bar"
-                        type="text"
+                        type="password"
                         { ...bindPassword}
                         />
                     </label>
                         <input className="submit-button" type="submit" value="Login" />
                 </form>
-                    {/* { routingForSearch() } */}
+                    { routingForSearch() }
             </div>
             <div className="horizontal-center">
                     <p className="login-message">{ props.loginMessage }</p>

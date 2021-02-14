@@ -28,7 +28,9 @@
 $geo: 'geomanistregular', sans-serif;
 $geo-light: 'geomanistlight', sans-serif;
 $blue: #273244;
-$warm: #383735;
+$warm: #222222;
+$warm-5: lighten($warm, 5%);
+$warm-10: lighten($warm, 10%);
 $orange: #bc520a;
 $grey: #c5cad6;
 
@@ -93,18 +95,27 @@ body {
 .header-container {
     background-color: $orange;
     width: 100vw;
-    height: 40px;
+    height: fit-content;
     @include vertical-center;
+    position: fixed;
+    top: 0;
+
+    @include mobile {
+        top: calc(100vh - 70px);
+    }
 }
 
 .header-content {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    height: 70px;
 }
 
 .header-item {
     margin: 0 2vw;
+    @include vertical-center;
+    cursor: pointer;
 }
 
 .link-text {
@@ -147,40 +158,77 @@ body {
 //     margin-left: 40px;
 // }
 
+
 .search-section {
+    // @include horizontal-center;
+    margin: 0 auto;
+    width: 95%;
+    min-width: fit-content;
+    background-color: $warm-5;
+}
+
+.search-sub-section {
     @include horizontal-center;
-    margin: 3vh 0 0 0;
+}
+
+.search-sub-section > form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 80%;
+    padding: 4vw;
+    background-color: $warm-5;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 80vw;
+    padding: 4vw;
+    background-color: $warm-5;
+}
+
+.search-sub-section > form > label {
+    width: 100%;
+    text-align: center;
+}
+
+.login-container >  .search-label {
+    margin: 20px 4vw;
+    width: 100%;
 }
 
 .search-label {
-    color: $orange;
-    font-size: 2.5rem;
-    width: 10vw;
+    color: $grey;
+    font-size: 1rem;
+    width: 20%;
 }
 
 .search-bar {
     height: 30px;
-    width: 40vw;
+    width: 80%;
     border: none;
-    background-color: $warm;
-    border-bottom: 2px $orange solid;
+    background-color: $warm-5;
+    border-bottom: 2px $grey solid;
     color: $grey;
     font-size: 1rem;
     padding: 0 10px;
-    margin: 0 1vw;
+    margin: 0;
 }
 
 .submit-button {
-    height: 32px; 
-    margin: 0;
+    height: 48px; 
+    margin: 24px auto 0 auto;
     background-color: $orange;
     border: none;
     color: $grey;
     font-size: 1rem;
+    width: 200px;
 }
 
 .submit-button:hover {
-    background-color: $warm;
+    background-color: $warm-5;
     border: 2px solid $orange;
     cursor: pointer;
 }
@@ -188,20 +236,28 @@ body {
 .random-flex {
     @include horizontal-center();
     margin-top: 1vh;
+    flex-direction: column;
+}
+
+.random-flex > a {
+    margin: 0 auto;
+    padding: 8px 16px;
 }
 
 .random-button {
-    height: 32px; 
+    // height: 32px; 
     margin: 0;
     background-color: $orange;
-    border: none;
+    border: 2px solid $orange;
+    // border: none;
     color: $grey;
     font-size: 1rem;
-    margin: 0 1vw;
+    margin: 0 auto;
+    padding: 16px 32px;
 }
 
 .random-button:hover {
-    background-color: $warm;
+    background-color: $warm-5;
     border: 2px solid $orange;
     cursor: pointer;
 }
@@ -242,11 +298,19 @@ body {
     grid-template-columns: 1fr 1fr 1fr 1fr ;
     grid-gap: 1vw;
     max-width: 100%;
+    margin-top: 100px;
+}
+
+.main-container.left-area-full {
+    grid-template-areas:
+    'results results results results';
 }
 
 .side-container {
     height: 300px;
     grid-area: history;
+    background-color: $warm-5;
+    padding: 16px;
 }
 
 .left-area-container { 
@@ -264,7 +328,7 @@ body {
 .cocktail-card {
     width: 150px;
     height: 200px;
-    background-color: $grey;
+    background-color: $warm-5;
     margin: 2vh 1vw;
     @include horizontal-center;
 }
@@ -280,7 +344,7 @@ body {
 }
 
 .cocktail-card-title {
-    color: $orange;
+    color: $grey;
     font-size: 1rem;
     text-align: center;
 }
@@ -349,7 +413,7 @@ body {
 /////////////////////////////////////////////////////
 
 .one-cocktail-container {
-    background-color: $grey;
+    background-color: $warm-5;
     width: 100%;
     // height: 800px;
     padding-bottom: 40px;
@@ -361,14 +425,14 @@ body {
 }
 
 .glass-type {
-    color: $warm;
+    color: $grey;
     font-size: 0.8rem;
 }
 
 .favorite {
     margin: 0 0 1vh 0;
     font-size: 1rem;
-    color: $warm;
+    color: $grey;
 }
 
 .toggle-switch {
@@ -466,13 +530,13 @@ input:checked + .slider:before {
 }
 
 .ingredient-title {
-    color: $blue;
+    color: $grey;
     font-size: 1rem;
     margin: 0;
 }
 
 .ingredient {
-    color: $blue;
+    color: $grey;
     font-size: 0.8rem;
     margin: 0.5vh 0;
 }
@@ -495,7 +559,7 @@ input:checked + .slider:before {
 
 .description {
     font-size: 1rem;
-    color: $blue;
+    color: $grey;
 }
 
 .horizontal-glass {
@@ -509,7 +573,7 @@ input:checked + .slider:before {
 /////////////////////////////////////////////////////
 
 .create-container {
-    background-color: $grey;
+    background-color: $warm-5;
     width: 100%;
     // height: 400px;
 }
@@ -544,12 +608,24 @@ input:checked + .slider:before {
 }
 
 .cocktail-input {
-    background-color: $grey;
+    background-color: $warm-5;
     border: none;
     border-bottom: 2px solid $orange;
     width: 100%;
     margin: 1vw 0;
+    color: $grey;
+
+    > option:not(:first-of-type) {
+        color: $grey;
+    }
 }
+
+.label-input-group {
+    > label {
+        color: $grey;
+    }
+}
+
 
 .ingredient-input-group {
     display: flex; 
@@ -559,6 +635,7 @@ input:checked + .slider:before {
 
     > label {
         width: 120%;
+        color: $grey;
     }
 }
 
