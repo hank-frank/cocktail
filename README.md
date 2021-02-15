@@ -8,7 +8,9 @@ It uses the [Cocktail DB](https://www.thecocktaildb.com/), they're a great resou
 ###### Production
 ```
 NODE_ENV=
-
+```
+The NODE_ENV needs to be 'production' for the DB config to work with the production DB config. 
+```
 PROD_DATABASE=
 PROD_DB_USER=
 PROD_DB_PASSWORD=
@@ -36,7 +38,11 @@ PORT if not present will default to 8000, you can use this env to specify a PORT
 
 To fire it up you will need to have the Always and Dev env's above. They are counting on you having an instance of mySQL running on your localhost using the default mySQL port 3306. 
 
-There are the usual steps of cloning the repo then:
+There are the usual steps of cloning the repo using 
+```
+git clone https://github.com/hank-frank/cocktail.git
+```
+then 
 ```
 npm install
 ```
@@ -72,3 +78,15 @@ visit http://localhost:8000/#/addCocktail or click 'create' in the header.
 From there you will need to enter all of the info for your cocktail and submit. From that point on it will be included in the search results. 
 
 There currently isn't a place to attach images to cocktails you create. This is in the works. 
+
+### To fire up in production:
+
+The production version of this project is formatted to be deployed on [Heroku](https://www.heroku.com) with a [Heroku Postgress DB](https://www.heroku.com/postgres). As long as you use the correct env's above for your Postgress connection and deploy to Heroku you'll be good to go. The most important env being 
+```
+NODE_ENV=production
+``` 
+which will need to be set to 'production' for the DB config to use the Postgress connection rather than the mySQL config. 
+
+
+
+
