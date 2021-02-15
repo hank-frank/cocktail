@@ -7,26 +7,27 @@ It uses the [Cocktail DB](https://www.thecocktaildb.com/), they're a great resou
 
 ###### Production
 ```
-NODE_ENV=
+NODE_ENV=<production or development>
 ```
 The NODE_ENV needs to be 'production' for the DB config to work with the production DB config. 
+This is set to work with [Heroku Postgress DB](https://www.heroku.com/postgres), these can all be found in the settings section of your Heroku-Postgress account. 
 ```
-PROD_DATABASE=
-PROD_DB_USER=
-PROD_DB_PASSWORD=
-PROD_DB_HOST=
-PROD_DB_PORT=
+PROD_DATABASE=<your databases name>
+PROD_DB_USER=<your database username>
+PROD_DB_PASSWORD=<your database password>
+PROD_DB_HOST=<your database host>
+PROD_DB_PORT=<your database port>
 ```
 ###### Dev
 ```
-DEV_DATABASE=
-DEV_DB_USER=
-DEV_DB_PASSWORD=
+DEV_DATABASE=<the name of your DB locally>
+DEV_DB_USER=<your local mySQL user name>
+DEV_DB_PASSWORD=<your local mySQL user password>
 ```
 ###### Always
 ```
-COCKTAIL_DB_API_KEY=
-JWT_SECRET=
+COCKTAIL_DB_API_KEY=<API key for a Cocktail DB account>
+JWT_SECRET=<can be any string>
 ```
 ###### Optional
 ```
