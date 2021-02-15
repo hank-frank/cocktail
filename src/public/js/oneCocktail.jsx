@@ -121,7 +121,7 @@ function Cocktail (props) {
                                     props.props.cocktail.both.map((ingredient, key) => {
                                         key++
                                         return (
-                                        <p className="ingredient" key={key}>{} { ingredient }</p>
+                                            <p className="ingredient" key={key}>{} { ingredient }</p>
                                         )
                                     }) : <p className="ingredient">ingredients</p>
                                 }

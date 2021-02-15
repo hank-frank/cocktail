@@ -103,6 +103,8 @@ body {
     @include mobile {
         top: calc(100vh - 70px);
     }
+
+    z-index: 40;
 }
 
 .header-content {
@@ -161,22 +163,26 @@ body {
 
 .search-section {
     // @include horizontal-center;
-    margin: 0 auto;
+    margin: 100px auto 0 auto;
     width: 95%;
     min-width: fit-content;
     background-color: $warm-5;
+
+    @include mobile {
+        margin: 24px auto 0 auto;
+    }
 }
 
 .search-sub-section {
-    @include horizontal-center;
+    @include vertical-center;
 }
 
 .search-sub-section > form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
-    width: 80%;
-    padding: 4vw;
+    width: calc(100% - 8vw);
+    padding: 0 4vw 0 4vw;
     background-color: $warm-5;
 }
 
@@ -187,22 +193,15 @@ body {
     width: 80vw;
     padding: 4vw;
     background-color: $warm-5;
-}
+    margin: 80px auto 0 auto;
 
-.search-sub-section > form > label {
-    width: 100%;
-    text-align: center;
+    @include mobile {
+        margin: 24px auto 0 auto;
+    }
 }
 
 .login-container >  .search-label {
-    margin: 20px 4vw;
     width: 100%;
-}
-
-.search-label {
-    color: $grey;
-    font-size: 1rem;
-    width: 20%;
 }
 
 .search-bar {
@@ -213,18 +212,28 @@ body {
     border-bottom: 2px $grey solid;
     color: $grey;
     font-size: 1rem;
-    padding: 0 10px;
+    padding: 12px 10px;
     margin: 0;
+}
+.search-label {
+    color: $grey;
+    font-size: 1rem;
+    width: 100%;
+    padding: 16px auto;
+    text-align: center;
+    width: 100%;
+    margin: 24px 0;
 }
 
 .submit-button {
-    height: 48px; 
-    margin: 24px auto 0 auto;
+    // height: 48px; 
+    margin: 0 auto 0 auto;
     background-color: $orange;
     border: none;
     color: $grey;
     font-size: 1rem;
     width: 200px;
+    padding: 12px 16px;
 }
 
 .submit-button:hover {
@@ -236,7 +245,7 @@ body {
 .random-flex {
     @include horizontal-center();
     margin-top: 1vh;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .random-flex > a {
@@ -254,12 +263,14 @@ body {
     font-size: 1rem;
     margin: 0 auto;
     padding: 16px 32px;
+    opacity: 0.5;
 }
 
 .random-button:hover {
     background-color: $warm-5;
     border: 2px solid $orange;
     cursor: pointer;
+    opacity: 1;
 }
 
 .no-ingredient-flex {
@@ -298,7 +309,12 @@ body {
     grid-template-columns: 1fr 1fr 1fr 1fr ;
     grid-gap: 1vw;
     max-width: 100%;
-    margin-top: 100px;
+
+    @include mobile {
+        grid-template-areas:
+        'results results results results'
+        'history history history history';
+    }
 }
 
 .main-container.left-area-full {
@@ -307,7 +323,8 @@ body {
 }
 
 .side-container {
-    height: 300px;
+    height: fit-content;
+    min-height: 300px;
     grid-area: history;
     background-color: $warm-5;
     padding: 16px;
@@ -332,8 +349,10 @@ body {
     margin: 2vh 1vw;
     @include horizontal-center;
 }
+
 .cocktail-card:hover {
-    box-shadow: 8px 8px 8px $blue;
+    box-shadow: 8px 8px 8px darken($warm, 4);
+    background-color: $warm-10;
     > .cocktail-card-title {
         color: $grey;
     }
@@ -564,8 +583,12 @@ input:checked + .slider:before {
 
 .horizontal-glass {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
+     
+    > div {
+        margin: 0 0 8px 0;
+    }
 }
 
 /////////////////////////////////////////////////////

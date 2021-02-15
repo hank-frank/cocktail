@@ -55,8 +55,10 @@ function App() {
         const rawUserWithToken = await fetch('./checkToken');
         if (rawUserWithToken.status === 200) {
             setIsLoggedIn(true);
+            setShowSideContainer(true);
         }  else {
             setIsLoggedIn(false);
+            setShowSideContainer(false);
         }
         
     }
@@ -226,6 +228,8 @@ function App() {
         document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         setIsLoggedIn(false);
         setShowSideContainer(false);
+        setHistoryArray([]);
+        setFavoritesArray([]);
     }
 
     const logoutRedirect = () => {
@@ -251,6 +255,17 @@ function App() {
                 logout = { logout }
                 testFunct = {testFunct}
                 />
+                {
+                    showSideContainer ?
+                    <SearchBar 
+                        search = { searchByIngredient }
+                        getRandom = {getRandomCocktail}
+                        getTen = {getTen}
+                        noIngredient = {noIngredient}
+                        resetNoIngredient = {resetNoIngredient}
+                    />
+                    : null
+                }
         {/* <button className="test-button" onClick={ testFunct }>Reset COokie</button> */}
         { logoutRedirect() }
             <div className={`main-container ${adjustWidth()}`}>
@@ -273,14 +288,14 @@ function App() {
                             resetSideContainerView = { resetSideContainerView }
                         />
                     </Route>
-                    <Route path="/search" component={ withAuth(SearchBar, {
+                    {/* <Route path="/search" component={ withAuth(SearchBar, {
                         search: searchByIngredient,
                         getRandom: getRandomCocktail,
                         getTen: getTen,
                         noIngredient: noIngredient,
                         resetNoIngredient: resetNoIngredient
                     })}>
-                    </Route>
+                    </Route> */}
                     <Route path="/searchContents" component={ withAuth(SearchResults, {
                         drinksArray: searchResult,
                         getById: getById

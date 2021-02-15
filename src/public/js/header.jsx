@@ -21,9 +21,9 @@ function Header (props) {
                 <div className="header-content">
                     { localLoggedIn 
                         ? <>
-                        <div className="header-item">
+                        {/* <div className="header-item">
                             <Link to='/search' className="link-text" replace>Search</Link>
-                        </div>
+                        </div> */}
                         <div className="header-item">
                             <Link to='/ById' className="link-text" replace>OneCocktail</Link>
                         </div>
