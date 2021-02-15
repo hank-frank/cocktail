@@ -17,7 +17,7 @@ if (process.env.NODE_ENV = 'production') {
                 }
             },
             host: process.env.PROD_DB_HOST,
-            port: process.env.PROD.DB.PORT,
+            port: process.env.PROD_DB_PORT,
         }
     );
 } else {

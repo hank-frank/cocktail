@@ -5,7 +5,9 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const withAuth = require('./withAuth.js');
-var crypto = require('crypto');
+const crypto = require('crypto');
+const favicon = require('serve-favicon');
+const path = require('path');
 // Op is for super target searches, accepts regex-esque queries
 const { Op } = require("sequelize");
 
@@ -15,6 +17,7 @@ dotenv.config();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(favicon(path.join(__dirname,'img','favicon.ico')));
 
 const secret = process.env.JWT_SECRET;
 
