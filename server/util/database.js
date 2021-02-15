@@ -1,17 +1,40 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(
-    process.env.DATABASE, 
-    process.env.DB_USER, 
-    process.env.DB_PASSWORD, 
-    {
-        dialect: 'mysql',
-        host: '127.0.0.1',
-        port: '3306',
-        socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+let sequelize;
+if (process.env.NODE_ENV = 'production') {
+    sequelize = new Sequelize(
+        process.env.PROD_DATABASE, 
+        process.env.PROD_DB_USER, 
+        process.env.PROD_DB_PASSWORD, 
+        {
+            dialect: 'postgres',
+            protocol: 'postgres',
+            dialectOptions: {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false // <<<<<<< YOU NEED THIS
+                }
+            },
+            host: 'ec2-18-204-74-74.compute-1.amazonaws.com',
+            port: '5432',
+        }
+    );
+} else {
 
-    }
-);
+    sequelize = new Sequelize(
+        process.env.DEV_DATABASE, 
+        process.env.DEV_DB_USER, 
+        process.env.DEV_DB_PASSWORD, 
+        {
+            dialect: 'mysql',
+            host: '127.0.0.1',
+            port: '3306',
+            socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+
+        }
+    );
+
+}
 
 module.exports = sequelize;
