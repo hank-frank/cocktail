@@ -16,8 +16,8 @@ if (process.env.NODE_ENV = 'production') {
                     rejectUnauthorized: false // <<<<<<< YOU NEED THIS
                 }
             },
-            host: 'ec2-18-204-74-74.compute-1.amazonaws.com',
-            port: '5432',
+            host: process.env.PROD_DB_HOST,
+            port: process.env.PROD.DB.PORT,
         }
     );
 } else {
