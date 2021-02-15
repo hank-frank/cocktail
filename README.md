@@ -1,5 +1,5 @@
 # Cocktail Viewer
-This is a (React)[https://reactjs.org/]/(Parcel)[https://parceljs.org/]/[Sequelize](https://sequelize.org/)/SQL app for searching cocktail recipes. 
+This is a [React](https://reactjs.org/)/[Parcel](https://parceljs.org/)/[Sequelize](https://sequelize.org/)/SQL app for searching cocktail recipes. 
 
 It uses the [Cocktail DB](https://www.thecocktaildb.com/), they're a great resource who run multiple different API's and are worth a look. 
 
