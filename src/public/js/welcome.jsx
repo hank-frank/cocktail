@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 function Welcome (props) {
     
     useEffect(() => {
-        console.log(`props from welcome: `, props);
     }, [props]);
     
     return (

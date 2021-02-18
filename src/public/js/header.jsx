@@ -6,9 +6,16 @@ function Header (props) {
     const [localLoggedIn, setLocalLoggedIn] = useState(false);
     
     useEffect( () => {
-        if (props.isLoggedIn) {
-            setLocalLoggedIn(true);
+        let isMounted = true;
+        if (isMounted) {
+            if (props.isLoggedIn) {
+                setLocalLoggedIn(true);
+            }
         }
+        return (() => {
+                isMounted = false;
+            }
+    )  
     }, [props.isLoggedIn]);
 
     const logout = () => {

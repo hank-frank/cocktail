@@ -11,8 +11,6 @@ function Login (props) {
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        console.log(`user: `, username);
-        console.log(`password: `, password);
 
         props.login(username, password);
         resetUsername();
@@ -30,8 +28,15 @@ function Login (props) {
     };
 
     useEffect(() => {
-        props.resetShouldRedirect();
-        props.resetSideContainerView();
+        let isMounted = true;
+        if (isMounted) {
+            props.resetShouldRedirect();
+            props.resetSideContainerView();
+        }
+        return (() => {
+                isMounted = false;
+            }
+        )   
     }, [props.shouldRedirectAfterLogin])
 
     return (

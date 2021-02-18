@@ -6,16 +6,28 @@ function Cocktail (props) {
     const [backToSearch, setBackToSearch] = useState(false);
 
     useEffect(() => {
-        setToggleState(false);
-        console.log(`props: `, props.props.cocktail);
-    },[props])
+        let isMounted = true;
+        if (isMounted) {
+            for (let i = 0; i < props.props.favoritesArray.length; i++) {
+                if (props.props.favoritesArray[i].id === props.props.cocktail.id) {
+                    setToggleState(true);
+                }
+            }
+        }
+        return (() => {
+                isMounted = false;
+            }
+        )   
+    },[props.props.cocktail]);
 
     const checkToggle = () => {
         setToggleState(!toggleState);
-        let tempCocktail = props.props.cocktail;
-        tempCocktail.favorite = toggleState;
-        props.props.makeFavorite(tempCocktail);
-        console.log(`make fav in fav`)
+        if (toggleState === true) {
+            props.props.removeFavorite(props.props.cocktail);
+        } else if (toggleState === false) {
+            let tempCocktail = props.props.cocktail;
+            props.props.makeFavorite(tempCocktail);
+        }
     };
 
     const handleBackClick = () => {
@@ -50,7 +62,14 @@ function Cocktail (props) {
     }
 
     useEffect(() => {
-        setBackToSearch(false);
+        let isMounted = true;
+        if (isMounted) {
+            setBackToSearch(false);
+        }
+        return (() => {
+                isMounted = false;
+            }
+        )   
     }, [backToSearch]);
 
     const glassicon = (glassType) => {
@@ -91,12 +110,13 @@ function Cocktail (props) {
     
     return (
         <>
-        {/* <button className="test-button" onClick={ getOne } >Get one cocktail from DB</button>  */}
-        <div className="one-cocktail-container">
+        {
+        props.props.cocktail.id ?
+        <div className="one-cocktail-container">               
             <div className="back-container" onClick={ () => handleBackClick() }>
                 { routeToSearch() }
             </div>
-            <div className="cocktail-content">                 
+            <div className="cocktail-content"> 
                 <div className="first-row">
                     <div className="title-ingredients">
                         <h4 className="cocktail-title">{ props.props.cocktail.name ? props.props.cocktail.name : "Name coming Soon!" }</h4>
@@ -145,8 +165,9 @@ function Cocktail (props) {
                     </div>
                 </div>
             </div>
+            {/* <button className="test-button" onClick={ sendItOnBack } >Test button, sends cocktail to backend</button>             */}
             </div>
-            <button className="test-button" onClick={ sendItOnBack } >Test button, sends cocktail to backend</button>            
+             : null}
         </>
     )
 };

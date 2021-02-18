@@ -12,9 +12,6 @@ function Register (props) {
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        console.log(`user: `, username);
-        console.log(`password: `, password);
-        console.log(`pass2: `, password2);
 
         props.registerUser(username, password, password2);
         resetUsername();
@@ -33,7 +30,14 @@ function Register (props) {
     };
 
     useEffect(() => {
-        setShouldRedirect(false);
+        let isMounted = true;
+        if (isMounted) {
+            setShouldRedirect(false);
+        }
+        return (() => {
+                isMounted = false;
+            }
+        )   
     }, [shouldRedirect])
 
     return (

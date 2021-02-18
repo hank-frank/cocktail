@@ -18,8 +18,10 @@ function App() {
     const [searchResult, setSearchResult] = useState([]);
     const [current, setCurrent] = useState({});
     const [historyArray, setHistoryArray] = useState([]);
+    const [histLen, setHistLen] = useState(0);
     const [allViewed, setAllViewed] = useState([]);
     const [favoritesArray, setFavoritesArray] = useState([]);
+    const [favLen, setFavLen] = useState(0);
     const [noIngredient, setNoIngredient] = useState('');
     const [loginMessage, setLoginMessage] = useState('');
     const [registerMessage, setRegisterMessage] = useState('');
@@ -28,40 +30,56 @@ function App() {
     const [shouldRedirectAfterLogin, setShouldRedirectAfterLogin] = useState(false);
 
     useEffect(() => {
-        let eachViewed = current;
-        let localViewed = allViewed;
-        localViewed.push(eachViewed);
-        setAllViewed(localViewed);
-        resetNoIngredient();
+        let isMounted = true;
+        if (isMounted) {
+            let eachViewed = current;
+            let localViewed = allViewed;
+            localViewed.push(eachViewed);
+            setAllViewed(localViewed);
+            resetNoIngredient();
+        }
+        return (() => {
+                isMounted = false;
+            }
+        ) 
+        
     }, [current])
 
     useEffect(() => {
-        let localAll = allViewed;
-        let localFavorites = [];
-
-        localAll.forEach((cocktail) => {
-            if (cocktail.favorite === true) {
-                localFavorites.push(cocktail);
+        let isMounted = true;
+        if (isMounted) {          
+            let localAll = allViewed;
+            let localFavorites = [];
+    
+            localAll.forEach((cocktail) => {
+                if (cocktail.favorite === true) {
+                    localFavorites.push(cocktail);
+                }
+            })
+            setFavoritesArray(localFavorites);
+            setFavLen(localFavorites.length);
+        }
+        return (() => {
+                isMounted = false;
             }
-        })
-        setFavoritesArray(localFavorites);
+        ) 
     }, [allViewed])
 
     useEffect(() => {    
-        const isValid = checkUseToken();
+        // const isValid = checkUseToken();
     })
 
-    const checkUseToken = async () => {
-        const rawUserWithToken = await fetch('./checkToken');
-        if (rawUserWithToken.status === 200) {
-            setIsLoggedIn(true);
-            setShowSideContainer(true);
-        }  else {
-            setIsLoggedIn(false);
-            setShowSideContainer(false);
-        }
+    // const checkUseToken = async () => {
+    //     const rawUserWithToken = await fetch('./checkToken');
+    //     if (rawUserWithToken.status === 200) {
+    //         // setIsLoggedIn(true);
+    //         setShowSideContainer(true);
+    //     }  else {
+    //         setIsLoggedIn(false);
+    //         setShowSideContainer(false);
+    //     }
         
-    }
+    // }
 
     const resetSideContainerView = () => {
         setShowSideContainer(false);
@@ -74,10 +92,11 @@ function App() {
             })
             .then((cocktail) => {
                 setCurrent(cocktail);
-                console.log('cocktail: ', cocktail);
                 let tempHistory = historyArray;
                 tempHistory.push(cocktail);
+                tempHistory = removeDuplicates(tempHistory, 'id');
                 setHistoryArray(tempHistory);
+                setHistLen(tempHistory.length);
             })
             .catch(err => console.error(`whoopsies random`, err))
     };
@@ -91,7 +110,6 @@ function App() {
                 setSearchResult(cocktailArray);
             })
             .catch(err => console.error(`whoopsies random ten: `, err));
-            console.log(`get Ten results: `, searchResult);
     };
 
     const searchByIngredient = (searchValue) => {
@@ -106,7 +124,6 @@ function App() {
             console.error(`whoopsies ingredient`, err);
             setNoIngredient(`Whoopsies... No cocktails with ${searchValue}, try again.`)
         });
-        console.log(`ingredient search results, `, searchResult);
     }
 
     const getById = (cocktailId, source) => {
@@ -115,12 +132,13 @@ function App() {
             return response = response.json()
         })
         .then ((cocktail) => {
-            console.log(`cocktail by id: `, cocktail);
             // setById(cocktail);
             setCurrent(cocktail);
             let tempHistory = historyArray;
             tempHistory.push(cocktail);
+            let noDupesHist = removeDuplicates(tempHistory, 'id');
             setHistoryArray(tempHistory);
+            setHistLen(tempHistory.length);
         })
         .catch(err => console.error(`whoopsies byId`, err))
     }
@@ -144,15 +162,32 @@ function App() {
             body: JSON.stringify(cocktailObject)
         });
         const addedCocktail = await rawResponse.json();
-        console.log(`added cocktail: `, addedCocktail);
+    }
+
+    const removeDuplicates = (myArr, prop) => {
+        return myArr.filter((obj, pos, arr) => {
+            return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+        });
     }
 
     const makeFavorite = (cocktail) => {
-        console.log(`make fav App`)
         let eachViewed = current;
         let localFavorites = favoritesArray;
         localFavorites.push(eachViewed);
+        let noDupesFavs = removeDuplicates(localFavorites, 'id');
+        setFavoritesArray(noDupesFavs);
+        setFavLen(noDupesFavs.length);
+    }
+
+    const removeFavorite = (cocktail) => {
+        let localFavorites = favoritesArray;
+        for (let i = 0; i < localFavorites.length; i++) {
+            if (favoritesArray[i].id === cocktail.id) {
+                favoritesArray.splice(i, 1);
+            }
+        }
         setFavoritesArray(localFavorites);
+        setFavLen(localFavorites.length);
     }
 
     const resetNoIngredient = () => {
@@ -180,7 +215,6 @@ function App() {
                 body: JSON.stringify(userObject)
             });
             const addedUser = await rawResponse.json();
-            console.log(`username response: `, addedUser);
             if (addedUser.message == 'already-exists') {
                 setRegisterMessage("User name already exists, pick a new one")
             }
@@ -203,10 +237,8 @@ function App() {
             body: JSON.stringify(userObject)
         });
         let loggedInUser = await rawResponse.json();
-        console.log(`username response: `, loggedInUser);
 
         if (loggedInUser.user == userName) {
-            console.log('usernamematches')
             setIsLoggedIn(true);     
             setShouldRedirectAfterLogin(true);  
             setShowSideContainer(true);
@@ -218,10 +250,7 @@ function App() {
     };
 
     const resetShouldRedirect = () => {
-        console.log(`should redirect after login 1: `, shouldRedirectAfterLogin);
         shouldRedirectAfterLogin ? setShouldRedirectAfterLogin(false) : null;
-        console.log(`should redirect after login 2: `, shouldRedirectAfterLogin);
-
     }
 
     const logout = async () => {
@@ -229,7 +258,10 @@ function App() {
         setIsLoggedIn(false);
         setShowSideContainer(false);
         setHistoryArray([]);
+        setHistLen(0);
         setFavoritesArray([]);
+        setFavLen(0);
+
     }
 
     const logoutRedirect = () => {
@@ -239,9 +271,7 @@ function App() {
     }
 
     const testFunct = () => {
-        // console.log(`reseting cookies`)
-        // document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        console.log(`loggedIn: `, isLoggedIn);
+        //can be used for tests
     }
 
     const adjustWidth = () => {
@@ -254,18 +284,18 @@ function App() {
                 isLoggedIn = { isLoggedIn }
                 logout = { logout }
                 testFunct = {testFunct}
+            />
+            {
+                showSideContainer ?
+                <SearchBar 
+                    search = { searchByIngredient }
+                    getRandom = {getRandomCocktail}
+                    getTen = {getTen}
+                    noIngredient = {noIngredient}
+                    resetNoIngredient = {resetNoIngredient}
                 />
-                {
-                    showSideContainer ?
-                    <SearchBar 
-                        search = { searchByIngredient }
-                        getRandom = {getRandomCocktail}
-                        getTen = {getTen}
-                        noIngredient = {noIngredient}
-                        resetNoIngredient = {resetNoIngredient}
-                    />
-                    : null
-                }
+                : null
+            }
         {/* <button className="test-button" onClick={ testFunct }>Reset COokie</button> */}
         { logoutRedirect() }
             <div className={`main-container ${adjustWidth()}`}>
@@ -305,7 +335,9 @@ function App() {
                         drinksArray: searchResult,
                         cocktail: current,
                         makeFavorite: makeFavorite,
-                        getOne: getOne
+                        removeFavorite: removeFavorite,
+                        getOne: getOne,
+                        favoritesArray: favoritesArray
                     })}></Route>
                     <Route path='/addCocktail' component={ withAuth(Create, {
                         addCocktail: addCocktail
@@ -316,10 +348,13 @@ function App() {
                     <div className="side-container" >
                         <History 
                             historyArray = { historyArray }
-                            recallHistory = { recallHistory }   
+                            historyLen = { histLen }
+                            recallHistory = { recallHistory }
+
                         />
                         <Favorites 
                             favoritesArray = { favoritesArray }
+                            favoritesLen = { favLen }
                             recallHistory = { recallHistory }
                         />
                     </div>

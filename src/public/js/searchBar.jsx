@@ -28,8 +28,14 @@ function SearchBar (props) {
     };
 
     useEffect(() => {
-        setShouldRedirect(false);
-        console.log(`props: `, props)
+        let isMounted = true;
+        if (isMounted) {
+            setShouldRedirect(false);
+        }
+        return (() => {
+                isMounted = false;
+            }
+        )   
     }, [shouldRedirect])
 
     return (
