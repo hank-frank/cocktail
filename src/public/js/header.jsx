@@ -44,9 +44,9 @@ function Header (props) {
                         : null 
                     }
                     
-                    <div className="header-item">
+                    {/* <div className="header-item">
                         <Link to='/register' className="link-text" replace>Register</Link>
-                    </div>
+                    </div> */}
                     
                     { localLoggedIn 
                         ?
