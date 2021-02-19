@@ -111,7 +111,7 @@ function Create (props) {
         }
         id++
 
-        props.addCocktail(newCocktail);
+        props.props.addCocktail(newCocktail);
 
         resetname();
         resetglass();

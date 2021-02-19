@@ -598,6 +598,11 @@ input:checked + .slider:before {
 .create-container {
     background-color: $warm-5;
     width: 100%;
+    margin: 0 auto;
+
+    @include mobile {
+        margin: 10px auto 0 auto;
+    }
     // height: 400px;
 }
 

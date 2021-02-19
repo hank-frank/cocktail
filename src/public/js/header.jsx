@@ -58,9 +58,9 @@ function Header (props) {
                             <Link to='/login' className="link-text" replace>Login</Link>
                         </div>
                     }
-                    <div className="header-item">
+                    {/* <div className="header-item">
                             <p onClick={ props.testFunct } className="link-text">test</p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>

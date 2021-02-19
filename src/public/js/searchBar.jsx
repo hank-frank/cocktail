@@ -44,7 +44,7 @@ function SearchBar (props) {
                     <label className="search-label">
                         Search by Ingredient:
                     </label>
-                <form onSubmit={ handleSubmit }>
+                <form className="search-form" onSubmit={ handleSubmit }>
                         <input
                         className="search-bar"
                         type="text"
