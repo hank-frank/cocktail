@@ -13,6 +13,16 @@ import Welcome from './welcome.jsx'
 import Register from './register.jsx';
 import Login from './login.jsx';
 import withAuth from './routeProtect.jsx'; 
+// const checkUseToken = async () => {
+//     const rawUserWithToken = await fetch('./checkToken');
+//     if (rawUserWithToken.status === 200) {
+//         return true;
+//     }  else {
+//         // setIsLoggedIn(false);
+//         // setShowSideContainer(false);
+//         return false;
+//     }
+// }
 
 function App() {
     const [searchResult, setSearchResult] = useState([]);
@@ -25,9 +35,9 @@ function App() {
     const [noIngredient, setNoIngredient] = useState('');
     const [loginMessage, setLoginMessage] = useState('');
     const [registerMessage, setRegisterMessage] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [showSideContainer, setShowSideContainer] = useState(false)
     const [shouldRedirectAfterLogin, setShouldRedirectAfterLogin] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     useEffect(() => {
         let isMounted = true;
@@ -65,21 +75,16 @@ function App() {
         ) 
     }, [allViewed])
 
-    useEffect(() => {    
-        // const isValid = checkUseToken();
+    useEffect(() => {
+        let token = Cookies.get('token');
+        if (token) {
+            setShowSideContainer(true);
+            setIsLoggedIn(true);
+        } else {
+            setShowSideContainer(false);
+            setIsLoggedIn(false);
+        }
     })
-
-    // const checkUseToken = async () => {
-    //     const rawUserWithToken = await fetch('./checkToken');
-    //     if (rawUserWithToken.status === 200) {
-    //         // setIsLoggedIn(true);
-    //         setShowSideContainer(true);
-    //     }  else {
-    //         setIsLoggedIn(false);
-    //         setShowSideContainer(false);
-    //     }
-        
-    // }
 
     const resetSideContainerView = () => {
         setShowSideContainer(false);
@@ -261,7 +266,6 @@ function App() {
         setHistLen(0);
         setFavoritesArray([]);
         setFavLen(0);
-
     }
 
     const logoutRedirect = () => {
@@ -272,6 +276,7 @@ function App() {
 
     const testFunct = () => {
         //can be used for tests
+        
     }
 
     const adjustWidth = () => {

@@ -10,6 +10,8 @@ function Header (props) {
         if (isMounted) {
             if (props.isLoggedIn) {
                 setLocalLoggedIn(true);
+            } else {
+                setLocalLoggedIn(false);
             }
         }
         return (() => {
@@ -46,6 +48,13 @@ function Header (props) {
                     
                     {/* <div className="header-item">
                         <Link to='/register' className="link-text" replace>Register</Link>
+                    </div> */}
+                    {/* <div className="header-item">
+                        <p onClick={ logout } className="link-text">Logout</p>
+                    </div>
+                    
+                    <div className="header-item">
+                        <Link to='/login' className="link-text" replace>Login</Link>
                     </div> */}
                     
                     { localLoggedIn 
