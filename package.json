@@ -34,7 +34,7 @@
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.1.2",
     "sass": "^1.22.9",
-    "sequelize": "^5.21.2",
+    "sequelize": "^6.29.0",
     "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
